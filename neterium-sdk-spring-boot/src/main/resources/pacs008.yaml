@@ -1,0 +1,108 @@
+fragments:
+  - name: "GrpHdr"
+  - name: "CdtTrfTxInf"
+    primary: true
+
+mappings:
+
+  type:
+    function: CONSTANT
+    sources:
+      - "ISO-20022"
+
+  # -- Payment info --
+
+  paymentRef:
+    sources:
+      - "PmtId.TxId"
+      - "PmtId.EndToEndId"
+
+  amount:
+    type: BIG_DECIMAL
+    sources:
+      - "IntrBkSttlmAmt['']"
+
+  currency:
+    sources:
+      - "IntrBkSttlmAmt.Ccy"
+
+  purpose:
+    sources:
+      - "Purp.Cd"
+
+  # -- Creditor info --
+
+  creditor.accountNumber:
+    sources:
+      - "CdtrAcct.Id.IBAN"
+      - "CdtrAcct.Id.Othr.Id"
+
+  creditor.accountType:
+    function: LOOKUP
+    sources:
+      - "CdtrAcct.Id.IBAN"
+      - "CdtrAcct.Id.Othr.Id"
+    values:
+      - "IBAN"
+      - "OTHER"
+
+  creditor.fullName:
+    sources:
+      - "Cdtr.Nm"
+
+  creditor.addressLine:
+    function: CONCAT
+    sources:
+      - "Cdtr.PstlAdr.StrtNm"
+      - "Cdtr.PstlAdr.BldgNb"
+
+  creditor.addressPostalCode:
+    sources:
+      - "Cdtr.PstlAdr.PstCd"
+
+  creditor.addressCity:
+    sources:
+      - "Cdtr.PstlAdr.TwnNm"
+
+  creditor.countryCode:
+    sources:
+      - "Cdtr.PstlAdr.Ctry"
+
+
+  # -- Debtor info --
+
+  debtor.accountNumber:
+    sources:
+      - "DbtrAcct.Id.IBAN"
+      - "DbtrAcct.Id.Othr.Id"
+
+  debtor.accountType:
+    function: LOOKUP
+    sources:
+      - "DbtrAcct.Id.IBAN"
+      - "DbtrAcct.Id.Othr.Id"
+    values:
+      - "IBAN"
+      - "OTHER"
+
+  debtor.fullName:
+    sources:
+      - "Dbtr.Nm"
+
+  debtor.addressLine:
+    function: CONCAT
+    sources:
+      - "Dbtr.PstlAdr.StrtNm"
+      - "Dbtr.PstlAdr.BldgNb"
+
+  debtor.addressPostalCode:
+    sources:
+      - "Dbtr.PstlAdr.PstCd"
+
+  debtor.addressCity:
+    sources:
+      - "Dbtr.PstlAdr.TwnNm"
+
+  debtor.countryCode:
+    sources:
+      - "Dbtr.PstlAdr.Ctry"

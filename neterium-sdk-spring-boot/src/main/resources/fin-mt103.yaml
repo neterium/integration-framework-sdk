@@ -1,0 +1,108 @@
+fragments:
+  - name: "textBlock"
+    primary: true
+
+mappings:
+
+  type:
+    function: CONSTANT
+    sources:
+      - "MT103"
+
+  # -- Payment info --
+
+  paymentRef:
+    sources:
+      - "fields[?(@.name == '20')].reference"
+
+  amount:
+    type: STRING
+    function: MT_AMOUNT
+    sources:
+      - "fields[?(@.name == '32A')].amount"
+
+  currency:
+    sources:
+      - "fields[?(@.name == '32A')].currency"
+
+  purpose:
+    sources:
+      - "fields[?(@.name == '72')].narrative"
+
+
+  # -- Creditor info --
+
+  creditor.accountNumber:
+    sources:
+      - "fields[?(@.name == '59A')].account"
+      - "fields[?(@.name == '59F')].partyIdentifier"
+      - "fields[?(@.name == '59')].account"
+
+  creditor.fullName:
+    sources:
+      - "fields[?(@.name == '59')].nameAndAddress"
+
+
+  # -- Debtor info --
+
+  debtor.accountNumber:
+    sources:
+      - "fields[?(@.name == '50A')].account"
+      - "fields[?(@.name == '50F')].partyIdentifier"
+      - "fields[?(@.name == '50K')].account"
+
+  debtor.fullName:
+    sources:
+      - "fields[?(@.name == '50F')].nameAndAddress1"
+      - "fields[?(@.name == '50K')].nameAndAddress"
+
+  debtor.countryCode:
+    sources:
+      - "fields[?(@.name == '50F')].nameAndAddress2"
+
+
+  # -- Intermediaries --
+
+  intermediaries[0].label:
+    sources:
+      - "fields[?(@.name == '53A')].name"
+  intermediaries[0].idValue:
+    sources:
+      - "fields[?(@.name == '53A')].identifierCode"
+  intermediaries[0].idType:
+    function: CONSTANT
+    sources:
+      - "BIC"
+
+  intermediaries[1].label:
+    sources:
+      - "fields[?(@.name == '54A')].name"
+  intermediaries[1].idValue:
+    sources:
+      - "fields[?(@.name == '54A')].identifierCode"
+  intermediaries[1].idType:
+    function: CONSTANT
+    sources:
+      - "BIC"
+
+  intermediaries[2].label:
+    sources:
+      - "fields[?(@.name == '55A')].name"
+  intermediaries[2].idValue:
+    sources:
+      - "fields[?(@.name == '55A')].identifierCode"
+  intermediaries[2].idType:
+    function: CONSTANT
+    sources:
+      - "BIC"
+
+  intermediaries[3].label:
+    sources:
+      - "fields[?(@.name == '56A')].name"
+  intermediaries[3].idValue:
+    sources:
+      - "fields[?(@.name == '56A')].identifierCode"
+  intermediaries[3].idType:
+    function: CONSTANT
+    sources:
+      - "BIC"

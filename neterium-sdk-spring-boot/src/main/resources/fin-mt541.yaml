@@ -1,0 +1,68 @@
+fragments:
+  - name: "textBlock"
+    primary: true
+
+mappings:
+
+  type:
+    function: CONSTANT
+    sources:
+      - "MT541"
+
+  # -- Payment info --
+
+  paymentRef:
+    sources:
+      - "fields[?(@.name == '20C')].reference"
+
+  amount:
+    type: STRING
+    function: MT_AMOUNT
+    sources:
+      - "fields[?(@.name == '19A')].amount"
+
+  currency:
+    sources:
+      - "fields[?(@.name == '19A')].currencyCode"
+
+
+  # -- 35B Intermediary --
+
+  intermediaries[0].label:
+    sources:
+      - "fields[?(@.name == '35B')].qualifier"
+  intermediaries[0].idValue:
+    sources:
+      - "fields[?(@.name == '35B')].iSIN"
+  intermediaries[0].idType:
+    function: CONSTANT
+    sources:
+      - "OTHER"
+  intermediaries[0].text:
+    sources:
+      - "fields[?(@.name == '70E')].narrative"
+
+  # -- 95P Intermediary --
+
+  intermediaries[1].label:
+    sources:
+      - "fields[?(@.name == '95P')].qualifier"
+  intermediaries[1].idValue:
+    sources:
+      - "fields[?(@.name == '95P')].identifierCode"
+  intermediaries[1].idType:
+    function: CONSTANT
+    sources:
+      - "BIC"
+
+  # -- 95Q Intermediary --
+
+  intermediaries[2].label:
+    sources:
+      - "fields[?(@.name == '95Q')].qualifier"
+  intermediaries[2].fullName:
+    sources:
+      - "fields[?(@.name == '95Q')].nameAndAddress2"
+  intermediaries[2].addressLine:
+    sources:
+      - "fields[?(@.name == '95Q')].nameAndAddress3"
