@@ -147,11 +147,11 @@ public abstract class JetFlowConverterSupport<T extends ScreenableTransactionBea
     }
 
 
-    protected Stream<JetFlowRequestBody> doConvert(Stream<Path> inputFilePaths, int batchSize) throws IOException {
+    private Stream<JetFlowRequestBody> doConvert(Stream<Path> inputFilePaths, int batchSize) throws IOException {
         Stream<T> stream = Stream.of();
         var it = inputFilePaths.iterator();
         while (it.hasNext()) {
-            var transactionsStream = mapper.parseFile(it.next());
+            var transactionsStream = doConvert(it.next());
             stream = Stream.concat(stream, transactionsStream);
         }
         return BatchHelper.groupIntoBatches(stream, batchSize)
@@ -160,7 +160,12 @@ public abstract class JetFlowConverterSupport<T extends ScreenableTransactionBea
     }
 
 
-    protected Stream<String> doConvertAndSerialize(Stream<Path> inputFilePaths, int batchSize, boolean pretty) throws IOException {
+    protected Stream<T> doConvert(Path inputFilePath) throws IOException {
+        return mapper.parseFile(inputFilePath);
+    }
+
+
+    private Stream<String> doConvertAndSerialize(Stream<Path> inputFilePaths, int batchSize, boolean pretty) throws IOException {
         return doConvert(inputFilePaths, batchSize)
                 .map(body -> jsonHelper.serialize(body, pretty, true))
                 .filter(Objects::nonNull);

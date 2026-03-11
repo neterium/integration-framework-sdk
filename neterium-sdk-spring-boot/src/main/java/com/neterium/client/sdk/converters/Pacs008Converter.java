@@ -19,6 +19,12 @@ import static com.neterium.client.sdk.mapping.Format.PACS_OO8;
 public class Pacs008Converter extends JetFlowConverterSupport<SimpleTransaction> {
 
     /**
+     * Token used to separate records in a ISO-2022 batch file
+     */
+    public static final String DELIMITER = "</xml>";
+
+
+    /**
      * Constructor
      *
      * @param xmlMapper  a Jackson <code>XmlMapper</code> instance

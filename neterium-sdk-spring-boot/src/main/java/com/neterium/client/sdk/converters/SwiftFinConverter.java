@@ -26,6 +26,12 @@ import java.util.stream.Stream;
 @Slf4j
 public abstract class SwiftFinConverter extends JetFlowConverterSupport<SimpleTransaction> {
 
+    /**
+     * Token used to separate records in a SWIFT FIN batch file
+     */
+    public static final String DELIMITER = "-}$";
+
+
     private final Format format;
 
     /**
@@ -56,17 +62,14 @@ public abstract class SwiftFinConverter extends JetFlowConverterSupport<SimpleTr
     }
 
 
-    /**
-     * @see JetFlowConverter#convert(Path, int)
-     */
+
     @Override
-    public Stream<JetFlowRequestBody> convert(Path inputFilePath, int batchSize) throws IOException {
+    protected Stream<SimpleTransaction> doConvert(Path inputFilePath) throws IOException {
         // First convert regular file to intermediate format
         var tmpJsonFilePath = finToProwide(inputFilePath);
         // Then use jetflow generic converter
-        var stream = super.convert(tmpJsonFilePath, batchSize);
+        var stream = super.doConvert(tmpJsonFilePath);
         return stream.onClose(() -> {
-            System.out.println("**** onClose");
             try {
                 Files.deleteIfExists(tmpJsonFilePath);
             } catch (IOException ignored) {
@@ -75,64 +78,15 @@ public abstract class SwiftFinConverter extends JetFlowConverterSupport<SimpleTr
     }
 
 
-    /**
-     * @see JetFlowConverter#convertBatch(Path, String, int)
-     */
-    @Override
-    public Stream<JetFlowRequestBody> convertBatch(Path inputFilePath, String delimiter, int batchSize) throws IOException {
-        // First convert batch file to separate files in intermediate format
-        var streamOfFiles = finBatchToProwide(inputFilePath, delimiter);
-        // Then use jetflow generic converter
-        return super.doConvert(streamOfFiles, batchSize)
-                .onClose(streamOfFiles::close);
-    }
-
-
-    /**
-     * @see JetFlowConverter#convertAndSerializeBatch(Path, String, int, boolean)
-     */
-    @Override
-    public Stream<String> convertAndSerializeBatch(Path inputFilePath, String delimiter, int batchSize, boolean pretty) throws IOException {
-        // First convert batch file to separate files intermediate format
-        var streamOfFiles = finBatchToProwide(inputFilePath, delimiter);
-        // Then use jetflow generic converter
-        return super.doConvertAndSerialize(streamOfFiles, batchSize, pretty)
-                .onClose(streamOfFiles::close);
-    }
-
-
     private Path finToProwide(Path finFilePath) throws IOException {
         var tmpJsonFilePath = Files.createTempFile("fin-", ".json");
         var parser = AbstractMT.parse(finFilePath.toAbsolutePath().toFile());
         var json = parser.toJson();
-        log.trace("Parsing results:\n{}", json);
+        log.trace("Intermediate parsing results:\n{}", json);
         Files.writeString(tmpJsonFilePath, json);
         tmpJsonFilePath.toFile().deleteOnExit();
         return tmpJsonFilePath;
     }
 
-
-    private Stream<Path> finBatchToProwide(Path inputFilePath, String delimiter) throws IOException {
-        final var filesToClean = new ArrayList<Path>();
-        var streamOfFiles = doSplitAndMap(inputFilePath, delimiter, path -> {
-            try {
-                var out = this.finToProwide(path);
-                filesToClean.add(out);
-                return out;
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        return streamOfFiles.onClose( () ->
-                FileUtils.silentDelete(filesToClean));
-    }
-
-
-    private <S> Stream<S> doSplitAndMap(Path inputFilePath, String delimiter, Function<Path, S> consumer) throws IOException {
-        var splitter = new FileSplitter(delimiter, ".part");
-        var stream = splitter.split(inputFilePath)
-                .map(consumer);
-        return stream.onClose(splitter::dispose);
-    }
 
 }
