@@ -31,7 +31,6 @@ import org.springframework.context.annotation.Import;
 @Configuration(proxyBeanMethods = false)
 @Import({
         FileService.class,
-        DirectoryWatcher.class,
         CounterpartScreener.class,
         TransactionScreener.class,
         JetScanBinder.class,
