@@ -13,7 +13,7 @@
 
     <groupId>com.neterium.client</groupId>
     <artifactId>neterium-sdk-parent</artifactId>
-    <version>1.0.0-RC1</version>
+    <version>1.0.0-RC2</version>
     <packaging>pom</packaging>
 
     <name>Neterium Client SDK</name>
