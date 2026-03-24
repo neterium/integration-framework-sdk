@@ -48,8 +48,24 @@ public class DeclarativeMapper<T> {
      * @param beanType     class of target beans
      */
     public DeclarativeMapper(ObjectMapper objectMapper, Format format, Class<T> beanType) {
+        var is = getClass().getClassLoader().getResourceAsStream(format.getMappingFile());
         this.objectMapper = objectMapper;
-        this.mappings = loadMappingFile(format.getMappingFile());
+        this.mappings = loadMappingFile(is);
+        this.beanType = beanType;
+        this.parseContext = createParseContext();
+    }
+
+
+    /**
+     * Constructor
+     *
+     * @param objectMapper a pre-configured ObjectMapper instance
+     * @param mapping      the mapping rules
+     * @param beanType     class of target beans
+     */
+    public DeclarativeMapper(ObjectMapper objectMapper, InputStream mapping, Class<T> beanType) {
+        this.objectMapper = objectMapper;
+        this.mappings = loadMappingFile(mapping);
         this.beanType = beanType;
         this.parseContext = createParseContext();
     }
@@ -64,6 +80,17 @@ public class DeclarativeMapper<T> {
      */
     public Stream<T> parseFile(Path inputFilePath) throws IOException {
         var inputStream = new FileInputStream((inputFilePath.toFile()));
+        return parseFile(inputStream);
+    }
+
+
+    /**
+     * Parse a file and map data to a stream of populated pojo's
+     *
+     * @param inputStream the input file to parse
+     * @return a stream of T instances
+     */
+    public Stream<T> parseFile(InputStream inputStream) {
         var iterator = parseInputStream(inputStream);
         return StreamSupport
                 .stream(Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED), false)
@@ -138,11 +165,10 @@ public class DeclarativeMapper<T> {
     }
 
 
-    private Mappings loadMappingFile(String mappingFile) {
+    private Mappings loadMappingFile(InputStream mappingRules) {
         try {
-            InputStream is = getClass().getClassLoader().getResourceAsStream(mappingFile);
             ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-            return mapper.readValue(is, Mappings.class);
+            return mapper.readValue(mappingRules, Mappings.class);
         } catch (IOException e) {
             throw new RuntimeException("Unable to read mapping file", e);
         }
