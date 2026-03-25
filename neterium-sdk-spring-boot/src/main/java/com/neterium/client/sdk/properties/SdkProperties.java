@@ -44,6 +44,9 @@ public class SdkProperties {
     @NestedConfigurationProperty
     private JobProperties jobs = new JobProperties();
 
+    @NestedConfigurationProperty
+    private ExceptionProperties exceptions = new ExceptionProperties();
+
 
     /**
      * Credentials

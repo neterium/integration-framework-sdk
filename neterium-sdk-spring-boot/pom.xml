@@ -159,7 +159,7 @@
                             <generateModelDocumentation>false</generateModelDocumentation>
                             <generateApiTests>false</generateApiTests>
                             <generateModelTests>false</generateModelTests>
-                            <apisToGenerate>Session,Jetscan,Jetflow,Repository</apisToGenerate>
+                            <apisToGenerate>Session,Jetscan,Jetflow,Repository,Exceptions</apisToGenerate>
                             <configOptions>
                                 <dateLibrary>java8</dateLibrary>
                                 <useJakartaEe>true</useJakartaEe>
