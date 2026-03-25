@@ -17,8 +17,8 @@
     <properties>
         <dropwizard-metrics.version>4.2.38</dropwizard-metrics.version>
         <neterium-api.version>1.8.0</neterium-api.version>
-        <openapi-generator.version>7.20.0</openapi-generator.version>
-        <prowide.version>SRU2025-10.3.10</prowide.version>
+        <openapi-generator.version>7.21.0</openapi-generator.version>
+        <prowide.version>SRU2025-10.3.11</prowide.version>
     </properties>
 
     <dependencies>
