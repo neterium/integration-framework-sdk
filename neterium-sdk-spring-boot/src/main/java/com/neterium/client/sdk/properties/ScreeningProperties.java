@@ -17,5 +17,10 @@ public class ScreeningProperties {
      * Set it to false in order to improve response times
      */
     private boolean validate = true;
-    
+
+    /**
+     * Optional client reference that will be set in all issued requests
+     */
+    private String clientReference;
+
 }

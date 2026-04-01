@@ -16,6 +16,7 @@ in Spring terminology) that you may use to develop a client application.
     * [Screening components](#screening-components)
     * [Matching components (Hit handler)](#matching-components-hit-handler)
     * [Mapping components](#mapping-components)
+    * [Exception component](#exception-component)
 
 <!-- TOC -->
 
@@ -571,4 +572,48 @@ public class MyConversionService {
 Please have a look at the provided [sample](../neterium-sdk-samples/sdk-demo-mapping/README.md)
 applications to explore all capabilities of the SDK regarding the mapping process.
 
+---
 
+### Exception component
+
+The SDK also includes a
+Spring [ExceptionTemplate](src/main/java/com/neterium/client/sdk/screening/ExceptionTemplate.java)
+that is intended to ease the management of **white-list** exceptions.
+Using this template allows you to get rid of noisy matches, based on one of the following strategies:
+
+- keep the created exception active till it will be **explicitly** deleted
+- make the created exception **automatically** expire as soon the profile is changed.
+
+In the latter case, a configuration property can be set to specify whether the _full_ or the _core_
+checksum should be used to detect profile changes.
+
+Sample usage:
+
+```java
+import com.demo.model.Match;
+
+@Autowired
+private ExceptionTemplate exceptionTemplate;
+
+private final boolean expireOnChecksumChange = true;
+
+public void whiteListMatch(Match match) {
+    var exceptionId = exceptionTemplate.createWhiteListException(
+            match.getMatchedText(),
+            match.getProfileId(),
+            expireOnChecksumChange);
+    System.out.println("New exception create with ID " + exceptionId);
+}
+
+public void deleteException(String exceptionId) {
+    var success = exceptionTemplate.deleteException(exceptionId);
+}
+```
+
+**application.yaml**
+
+```yaml
+neterium:
+  exceptions:
+    use-core-checksum: true
+```
