@@ -134,6 +134,7 @@ public class TransactionScreener extends BaseScreener {
                         new CoreRequestContext()
                                 .sessionId(sessionId)
                                 .reference(request.getReference())
+                                .clientReference(screeningProperties.getClientReference())
                 );
     }
 

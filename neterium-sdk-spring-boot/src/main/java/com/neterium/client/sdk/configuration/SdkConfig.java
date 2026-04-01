@@ -11,6 +11,7 @@ import com.neterium.client.sdk.matching.MatchVerifierClientImpl;
 import com.neterium.client.sdk.matching.MatchVerifierPassThroughImpl;
 import com.neterium.client.sdk.properties.SdkProperties;
 import com.neterium.client.sdk.screening.CounterpartScreener;
+import com.neterium.client.sdk.screening.ExceptionTemplate;
 import com.neterium.client.sdk.screening.ScreeningTemplate;
 import com.neterium.client.sdk.screening.TransactionScreener;
 import com.neterium.client.sdk.security.OAuth2Client;
@@ -47,6 +48,7 @@ import org.springframework.context.annotation.Import;
         ThrottlerImpl.class,
         MatchVerifierClientImpl.class,
         MatchVerifierPassThroughImpl.class,
+        ExceptionTemplate.class
 })
 @EnableConfigurationProperties(SdkProperties.class)
 public class SdkConfig {

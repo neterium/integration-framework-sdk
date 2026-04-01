@@ -8,10 +8,7 @@ import com.neterium.client.sdk.properties.SdkProperties;
 import com.neterium.client.sdk.security.TokenService;
 import com.neterium.sdk.ApiClient;
 import com.neterium.sdk.RFC3339DateFormat;
-import com.neterium.sdk.api.JetflowApi;
-import com.neterium.sdk.api.JetscanApi;
-import com.neterium.sdk.api.RepositoryApi;
-import com.neterium.sdk.api.SessionApi;
+import com.neterium.sdk.api.*;
 import jakarta.annotation.PreDestroy;
 import org.apache.hc.client5.http.config.ConnectionConfig;
 import org.apache.hc.client5.http.config.RequestConfig;
@@ -121,6 +118,18 @@ public class ApiClientConfig {
     @Bean
     public RepositoryApi repositoryApi(ApiClient apiClient) {
         return new RepositoryApi(apiClient);
+    }
+
+
+    /**
+     * Expose a ready-to-use instance of {@link ExceptionsApi} proxy
+     *
+     * @param apiClient a {@link ApiClient} instance
+     * @return a {@link ExceptionsApi} instance
+     */
+    @Bean
+    public ExceptionsApi exceptionApi(ApiClient apiClient) {
+        return new ExceptionsApi(apiClient);
     }
 
 
