@@ -31,6 +31,7 @@ public class ExceptionTemplate {
     /**
      * Constructor
      *
+     * @param sdkProperties SDK configuration bean
      * @param exceptionsApi a {@link ExceptionsApi} instance
      * @param repositoryApi a {@link RepositoryApi} instance
      */

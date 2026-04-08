@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema id="sdnList" targetNamespace="http://tempuri.org/sdnList.xsd" elementFormDefault="qualified"
+           xmlns="http://tempuri.org/sdnList.xsd"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="sdnList">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="publshInformation" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="Publish_Date" minOccurs="0">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <!-- MM/dd/yyyy -->
+                                        <xs:pattern value="((1[0-2])|(0[1-9]))/(([1-2][0-9])|(0[1-9])|(3[0-1]))/\d{4}"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="Record_Count" type="xs:int" minOccurs="0"/>
+                            <xs:element name="description" minOccurs="0">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:maxLength value="255"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="moreInfo" minOccurs="0">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:maxLength value="255"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="sdnEntry" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:all>
+                            <xs:element name="uid" type="xs:string"/>
+                            <xs:element name="firstName" type="xs:string" minOccurs="0"/>
+                            <xs:element name="lastName" type="xs:string" minOccurs="0"/>
+                            <xs:element name="title" type="xs:string" minOccurs="0"/><!-- for Individual sdnType -->
+                            <xs:element name="sdnType">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="Individual"/>
+                                        <xs:enumeration value="Entity"/>
+                                        <xs:enumeration value="Aircraft"/>
+                                        <xs:enumeration value="Vessel"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                            <xs:element name="remarks" type="xs:string" minOccurs="0"/>
+                            <xs:element name="programList" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="program" type="xs:string" minOccurs="0"
+                                                    maxOccurs="unbounded"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="idList" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="id" minOccurs="0" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:all>
+                                                    <xs:element name="uid" type="xs:int"
+                                                                minOccurs="0"/><!-- ignored by Neterium -->
+                                                    <xs:element name="idType" type="xs:string" minOccurs="0"/>
+                                                    <xs:element name="idNumber">
+                                                        <xs:simpleType>
+                                                            <xs:restriction base="xs:string">
+                                                                <xs:minLength value="1"/>
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                    <xs:element name="idCountry" type="xs:string" minOccurs="0"/>
+                                                    <xs:element name="issueDate" type="xs:string" minOccurs="0"/>
+                                                    <xs:element name="expirationDate" type="xs:string" minOccurs="0"/>
+                                                </xs:all>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="akaList" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="aka" minOccurs="0" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:all>
+                                                    <xs:element name="uid" type="xs:int"
+                                                                minOccurs="0"/><!-- ignored by Neterium -->
+                                                    <xs:element name="type" type="xs:string"
+                                                                minOccurs="0"/><!-- set to AKA by Neterium -->
+                                                    <xs:element name="category">
+                                                        <xs:simpleType>
+                                                            <xs:restriction base="xs:string">
+                                                                <xs:enumeration value="strong"/>
+                                                                <xs:enumeration value="weak"/>
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                    <xs:element name="lastName">
+                                                        <xs:simpleType>
+                                                            <xs:restriction base="xs:string">
+                                                                <xs:minLength value="1"/>
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                    <xs:element name="firstName" type="xs:string" minOccurs="0"/>
+                                                </xs:all>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="addressList" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="address" minOccurs="0" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:all>
+                                                    <xs:element name="uid" type="xs:int"
+                                                                minOccurs="0"/><!-- ignored by Neterium -->
+                                                    <xs:element name="address1" type="xs:string" minOccurs="0"/>
+                                                    <xs:element name="address2" type="xs:string" minOccurs="0"/>
+                                                    <xs:element name="address3" type="xs:string" minOccurs="0"/>
+                                                    <xs:element name="city" type="xs:string" minOccurs="0"/>
+                                                    <xs:element name="stateOrProvince" type="xs:string" minOccurs="0"/>
+                                                    <xs:element name="postalCode" type="xs:string" minOccurs="0"/>
+                                                    <xs:element name="country">
+                                                        <xs:simpleType>
+                                                            <xs:restriction base="xs:string">
+                                                                <xs:minLength value="1"/>
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                </xs:all>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="nationalityList" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="nationality" minOccurs="0" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="uid" type="xs:int"
+                                                                minOccurs="0"/><!-- ignored by Neterium -->
+                                                    <xs:element name="country">
+                                                        <xs:simpleType>
+                                                            <xs:restriction base="xs:string">
+                                                                <xs:minLength value="1"/>
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                    <xs:element name="mainEntry" type="xs:boolean"
+                                                                minOccurs="0"/><!-- ignored by Neterium -->
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="citizenshipList" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="citizenship" minOccurs="0" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="uid" type="xs:int"
+                                                                minOccurs="0"/><!-- ignored by Neterium -->
+                                                    <xs:element name="country">
+                                                        <xs:simpleType>
+                                                            <xs:restriction base="xs:string">
+                                                                <xs:minLength value="1"/>
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                    <xs:element name="mainEntry" type="xs:boolean"
+                                                                minOccurs="0"/><!-- ignored by Neterium -->
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="dateOfBirthList" minOccurs="0"><!-- for Individual sdnType -->
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="dateOfBirthItem" minOccurs="0" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="uid" type="xs:int"
+                                                                minOccurs="0"/><!-- ignored by Neterium -->
+                                                    <xs:element name="dateOfBirth">
+                                                        <xs:simpleType>
+                                                            <xs:restriction base="xs:string">
+                                                                <!-- dd MMM yyyy or yyyy -->
+                                                                <xs:pattern
+                                                                        value="((([1-2][0-9])|(0[1-9])|(3[0-1])) ((Jan|JAN|jan)|(Feb|FEB|feb)|(Mar|MAR|mar)|(Apr|APR|apr)|(May|MAY|may)|(Jun|JUN|jun)|(Jul|JUL|jul)|(Aug|AUG|aug)|(Sep|SEP|sep)|(Oct|OCT|oct)|(Nov|NOV|nov)|(Dec|DEC|dec)) )?\d{4}"/>
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                    <xs:element name="mainEntry" type="xs:boolean"
+                                                                minOccurs="0"/><!-- ignored by Neterium -->
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="placeOfBirthList" minOccurs="0"><!-- for Individual sdnType -->
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="placeOfBirthItem" minOccurs="0" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                    <xs:element name="uid" type="xs:int"
+                                                                minOccurs="0"/><!-- ignored by Neterium -->
+                                                    <xs:element name="placeOfBirth">
+                                                        <xs:simpleType>
+                                                            <xs:restriction base="xs:string">
+                                                                <xs:minLength value="1"/>
+                                                            </xs:restriction>
+                                                        </xs:simpleType>
+                                                    </xs:element>
+                                                    <xs:element name="mainEntry" type="xs:boolean"
+                                                                minOccurs="0"/><!-- ignored by Neterium -->
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="vesselInfo" minOccurs="0"><!-- for Vessel sdnType -->
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="callSign" type="xs:string" minOccurs="0"/>
+                                        <xs:element name="vesselType" type="xs:string" minOccurs="0"/>
+                                        <xs:element name="vesselFlag" type="xs:string" minOccurs="0"/>
+                                        <xs:element name="vesselOwner" type="xs:string" minOccurs="0"/>
+                                        <xs:element name="tonnage" type="xs:int" minOccurs="0"/>
+                                        <xs:element name="grossRegisteredTonnage" type="xs:int" minOccurs="0"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:all>
+                        <xs:attribute name="action" default="add">
+                            <xs:simpleType>
+                                <xs:restriction base="xs:string">
+                                    <xs:enumeration value="add"/>
+                                    <xs:enumeration value="update"/>
+                                    <xs:enumeration value="delete"/>
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:attribute>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
