@@ -39,40 +39,40 @@ public class PrivateListTemplate {
     /**
      * Upload a (new or existing) private list
      *
-     * @param uploadRequest all parameters of the upload request
+     * @param request upload parameters
      * @return id of created or updated private list
      */
-    public String uploadPrivateList(UploadRequest uploadRequest) {
-        var checkSum = computeCheckSum(uploadRequest.getFile());
+    public String uploadPrivateList(UploadRequest request) {
+        var checkSum = computeCheckSum(request.getFile());
         String listId;
-        if (uploadRequest.isDeltaMode()) {
-            listId = uploadRequest.getListId()
+        if (request.isDeltaMode()) {
+            listId = request.getListId()
                     .orElseThrow(() -> new SdkException("ListID is mandatory in DELTA mode"));
-            var action = Optional.ofNullable(uploadRequest.getAction())
+            var action = Optional.ofNullable(request.getAction())
                     .map(v -> v.toString().toLowerCase())
                     .orElse(null);
             listApi.uploadDeltaList(listId,
-                    uploadRequest.isClassify(),
-                    uploadRequest.isTransliterate(),
+                    request.isClassify(),
+                    request.isTransliterate(),
                     true,
-                    uploadRequest.getClientReference(),
+                    request.getClientReference(),
                     checkSum,
                     action,
-                    uploadRequest.getFile()
+                    request.getFile()
             );
             log.debug("List {} successfully updated", listId);
         } else {
-            listId = uploadRequest.getListId()
+            listId = request.getListId()
                     .orElseGet(this::generateListId);
             var outcome = listApi.uploadList(listId,
-                    uploadRequest.isClassify(),
-                    uploadRequest.isTransliterate(),
+                    request.isClassify(),
+                    request.isTransliterate(),
                     true,
-                    uploadRequest.getClientReference(),
+                    request.getClientReference(),
                     checkSum,
-                    uploadRequest.getFile()
+                    request.getFile()
             );
-            log.debug("List {} successfully created ({} records)", uploadRequest.getListId(), outcome.getCount());
+            log.debug("List {} successfully created ({} records)", request.getListId(), outcome.getCount());
         }
         return listId;
     }
@@ -81,7 +81,8 @@ public class PrivateListTemplate {
     /**
      * Delete a private list
      *
-     * @param listId - id of the list to delete
+     * @param listId    id of the list to delete
+     * @param clientRef client reference
      */
     public void deletePrivateList(String listId, String clientRef) {
         listApi.deleteList(listId, clientRef);

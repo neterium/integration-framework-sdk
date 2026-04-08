@@ -7,7 +7,7 @@ import java.io.File;
 import java.util.Optional;
 
 /**
- * UploadRequest
+ * Encapsulation of all parameters needed by an upload operation
  *
  * @author Bernard Ligny
  */
@@ -23,12 +23,21 @@ public class UploadRequest {
     private boolean deltaMode = false;
     private Action action;
 
+    /**
+     * Possible actions on provided records of file
+     */
     enum Action {
         ADD,
         UPDATE,
         DELETE
     }
 
+
+    /**
+     * Get the specified list identifier
+     *
+     * @return optional list id
+     */
     public Optional<String> getListId() {
         return Optional.ofNullable(listId);
     }

@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * PrivateListBuilder
+ * Component that can be used to create private lists from CSV files
  *
  * @author Bernard Ligny
  */
@@ -42,16 +42,32 @@ import java.util.stream.Stream;
 public class PrivateListBuilder {
 
     private static final boolean ADD_UIDS = false;
-
     private static final DateTimeFormatter IN_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
     private static final DateTimeFormatter OUT_FORMATTER = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH);
 
 
+    /**
+     * Read &amp; parse a CSV file using default encoding and separators
+     *
+     * @param csvFile file to read
+     * @return a private list in canonical XML format
+     * @throws Exception in case of error
+     */
     public Path parse(File csvFile) throws Exception {
         return parse(csvFile, Charset.defaultCharset(), ';', '~');
     }
 
 
+    /**
+     * Read &amp; parse a CSV file with custom options
+     *
+     * @param csvFile        file to read
+     * @param charset        charset of CSV file
+     * @param fieldSeparator char used to separate fields (columns)
+     * @param valueSeparator char used to separate multiple values in a same field
+     * @return a private list in canonical XML format
+     * @throws Exception in case of error
+     */
     public Path parse(File csvFile, Charset charset, char fieldSeparator, char valueSeparator) throws Exception {
         CSVReader csvReader = null;
         Path outputFile = null;
