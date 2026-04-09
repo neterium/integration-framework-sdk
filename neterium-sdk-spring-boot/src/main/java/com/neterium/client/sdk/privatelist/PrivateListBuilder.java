@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -42,8 +43,16 @@ import java.util.stream.Stream;
 public class PrivateListBuilder {
 
     private static final boolean ADD_UIDS = false;
-    private static final DateTimeFormatter IN_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
-    private static final DateTimeFormatter OUT_FORMATTER = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH);
+    private static final DateTimeFormatter IN_FORMATTER = new DateTimeFormatterBuilder()
+            .appendOptional(DateTimeFormatter.ofPattern("dd MMM yyyy",
+                    Locale.ENGLISH)) // "13 Feb 1972"
+            .appendOptional(DateTimeFormatter.ofPattern("dd/MM/yyyy"))  // "13/02/1972"
+            .appendOptional(DateTimeFormatter.ofPattern("dd-MM-yyyy"))  // "13-02-1972"
+            .appendOptional(DateTimeFormatter.ofPattern("yyyy-MM-dd"))  // "1972-02-13"
+            .appendOptional(DateTimeFormatter.ofPattern("yyyy/MM/dd"))  // "1972/02/13"
+            .toFormatter();
+    private static final DateTimeFormatter OUT_FORMATTER = DateTimeFormatter.ofPattern("dd MMM yyyy",
+            Locale.ENGLISH); // // "13 Feb 1972"
 
 
     /**
@@ -133,12 +142,16 @@ public class PrivateListBuilder {
     private SdnEntry processRow(List<String> headers, String[] data, char valueSeparator) {
         var beanWrapper = new SdnEntryWrapper();
         for (int col = 0; col < data.length; col++) {
+            var value = data[col];
+            if (StringUtils.isEmpty(value)) {
+                continue;
+            }
             var field = CsvField.valueOf(headers.get(col));
             if (field.isMultiValued()) {
-                processMutiValue(field, StringUtils.split(data[col], valueSeparator), beanWrapper);
+                processMutiValue(field, StringUtils.split(value, valueSeparator), beanWrapper);
             } else {
                 var idx = beanWrapper.getSizeIfCollection(field.getProperties().getFirst()).orElse(0);
-                processSingleValue(field, field.getProperties(), idx, data[col], beanWrapper);
+                processSingleValue(field, field.getProperties(), idx, value, beanWrapper);
             }
         }
         return beanWrapper.unwrap();
@@ -174,7 +187,7 @@ public class PrivateListBuilder {
                     beanWrapper.set(targetProperty + "." + field.getKeyProperty(), tokens[0]);
                     beanWrapper.set(targetProperty + "." + field.getValueProperty(), tokens[1]);
                 }
-            } else if (field.getKeyProperty() != null) {
+            } else if (field.getKeyProperty() != null && StringUtils.isNotEmpty(value)) {
                 beanWrapper.set(targetProperty + "." + field.getKeyProperty(), field.name().toLowerCase());
                 beanWrapper.set(targetProperty + "." + field.getValueProperty(), value);
             }
@@ -244,21 +257,14 @@ public class PrivateListBuilder {
 
 
     private void formatDOB(SdnEntry.DateOfBirthList.DateOfBirthItem item) {
-        var original = item.getDateOfBirth();
-        if (StringUtils.isBlank(original)) {
+        var dob = item.getDateOfBirth();
+        if (StringUtils.isBlank(dob)) {
             // Empty
-        } else if (original.length() == 4) {
+        } else if (dob.length() == 4) {
             // Assume "YYYY"
         } else {
-            var s = StringUtils.remove(original.trim(), '/');
-            s = StringUtils.remove(s, '-');
-            if (StringUtils.isNumeric(s) && s.length() == 8) {
-                // Turn "ddMMyyyy" into "dd MMM yyyy"
-                var date = IN_FORMATTER.parse(s);
-                item.setDateOfBirth(OUT_FORMATTER.format(date));
-            } else {
-                // Assume already in "dd MMM yyyy"
-            }
+            var date = IN_FORMATTER.parse(dob);
+            item.setDateOfBirth(OUT_FORMATTER.format(date));
         }
     }
 
