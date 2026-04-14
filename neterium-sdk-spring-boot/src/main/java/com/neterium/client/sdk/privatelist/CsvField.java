@@ -3,8 +3,12 @@ package com.neterium.client.sdk.privatelist;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * All possible fields that can appear in a private list in CSV format
@@ -14,6 +18,7 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 @AllArgsConstructor
+@Slf4j
 public enum CsvField {
 
     /**
@@ -39,12 +44,12 @@ public enum CsvField {
     /**
      * Gender (in case of Individual type)
      */
-    GENDER(List.of("idList.id[%d]"), false, true, "idType", "idNumber"),
+    GENDER(List.of("idList.id[%d]"), false, true, "idType", "idNumber", null),
 
     /**
      * List of party identifiers in the format "Type=Value" (multivalued, dictionary)
      */
-    IDS(List.of("idList.id[%d]"), true, true, "idType", "idNumber"),
+    IDS(List.of("idList.id[%d]"), true, true, "idType", "idNumber", null),
 
     /**
      * List of categories (multivalued)
@@ -82,21 +87,36 @@ public enum CsvField {
     VSL(List.of("vesselInfo"), true, true),
 
     /**
+     * Program
+     */
+    PROG("programList.program[0]", CsvField::validateProgram),
+
+    /**
      * Action on record
      */
     ACTION("action");
+
 
     private final List<String> properties;
     private final boolean multiValued;
     private final boolean dictionary;
     private String keyProperty;
     private String valueProperty;
+    private Predicate<String> validation;
 
     /**
-     * Constructor
+     * Alternate (shorter) constructor
      */
     CsvField(String path) {
+        this(path, null);
+    }
+
+    /**
+     * Alternate (shorter) constructor
+     */
+    CsvField(String path, Predicate<String> validation) {
         this(List.of(path), false, false);
+        this.validation = validation;
     }
 
     /**
@@ -106,6 +126,29 @@ public enum CsvField {
      */
     public boolean needSplit() {
         return properties.size() == 2;
+    }
+
+
+    /**
+     * Get optional validation function
+     *
+     * @return optional predicate
+     */
+    public Optional<Predicate<String>> getValidation() {
+        return Optional.ofNullable(validation);
+    }
+
+
+    private static final Set<String> PROGRAM_LIST = Set.of(
+            "Risk Country", "Risk Region", "Risk City", "CustomId"
+    );
+
+    private static boolean validateProgram(String value) {
+        var valid = PROGRAM_LIST.contains(value);
+        if (!valid) {
+            log.error("Value '{}' must be oneOf {}", value, PROGRAM_LIST);
+        }
+        return valid;
     }
 
 }

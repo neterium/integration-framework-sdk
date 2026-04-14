@@ -31,7 +31,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Component that can be used to create private lists from CSV files
@@ -58,12 +57,13 @@ public class PrivateListBuilder {
     /**
      * Read &amp; parse a CSV file using default encoding and separators
      *
-     * @param csvFile file to read
+     * @param csvFile  file to read
+     * @param listType type of list
      * @return a private list in canonical XML format
      * @throws Exception in case of error
      */
-    public Path parse(File csvFile) throws Exception {
-        return parse(csvFile, Charset.defaultCharset(), ';', '~');
+    public Path parse(File csvFile, ListType listType) throws Exception {
+        return parse(csvFile, listType, Charset.defaultCharset(), ';', '~');
     }
 
 
@@ -71,13 +71,14 @@ public class PrivateListBuilder {
      * Read &amp; parse a CSV file with custom options
      *
      * @param csvFile        file to read
+     * @param listType       type of list
      * @param charset        charset of CSV file
      * @param fieldSeparator char used to separate fields (columns)
      * @param valueSeparator char used to separate multiple values in a same field
      * @return a private list in canonical XML format
      * @throws Exception in case of error
      */
-    public Path parse(File csvFile, Charset charset, char fieldSeparator, char valueSeparator) throws Exception {
+    public Path parse(File csvFile, ListType listType, Charset charset, char fieldSeparator, char valueSeparator) throws Exception {
         CSVReader csvReader = null;
         Path outputFile = null;
         SdnList xmlRoot = null;
@@ -95,7 +96,7 @@ public class PrivateListBuilder {
             int i = 0;
             while ((data = csvReader.readNext()) != null) {
                 if (i == 0) {
-                    fieldNames = catchHeaders(data);
+                    fieldNames = catchHeaders(data, listType);
                     outputFile = Files.createTempFile("tmp_", ".xml");
                     xmlRoot = blankList();
                 } else {
@@ -105,7 +106,7 @@ public class PrivateListBuilder {
                 i++;
             }
             assert (xmlRoot != null);
-            finalize(xmlRoot);
+            finalize(xmlRoot, listType);
             save(xmlRoot, outputFile);
             return outputFile;
         } catch (Exception e) {
@@ -119,8 +120,9 @@ public class PrivateListBuilder {
     }
 
 
-    private List<String> catchHeaders(String[] data) {
-        var allowed = Stream.of(CsvField.values())
+    private List<String> catchHeaders(String[] data, ListType listType) {
+        var allowed = listType.getAllowedFields()
+                .stream()
                 .map(Enum::name)
                 .collect(Collectors.toSet());
         var headers = new ArrayList<String>();
@@ -192,6 +194,7 @@ public class PrivateListBuilder {
                 beanWrapper.set(targetProperty + "." + field.getValueProperty(), value);
             }
         } else {
+            field.getValidation().ifPresent(check -> check.test(value));
             beanWrapper.set(targetProperty, value);
         }
     }
@@ -210,7 +213,7 @@ public class PrivateListBuilder {
     }
 
 
-    private void finalize(SdnList root) {
+    private void finalize(SdnList root, ListType listType) {
         root.getPublshInformation()
                 .setRecordCount(root.getSdnEntry().size());
         var uuid = new AtomicInteger(0);
@@ -243,6 +246,9 @@ public class PrivateListBuilder {
                 forEach(next::getPlaceOfBirthList, SdnEntry.PlaceOfBirthList::getPlaceOfBirthItem,
                         e -> e.setUid(uuid.incrementAndGet())
                 );
+            }
+            if (listType.equals(ListType.CUSTOM_LIST)) {
+                next.setSdnType("Entity");
             }
         }
     }
