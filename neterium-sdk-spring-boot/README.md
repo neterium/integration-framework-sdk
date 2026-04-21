@@ -17,6 +17,7 @@ in Spring terminology) that you may use to develop a client application.
     * [Matching components (Hit handler)](#matching-components-hit-handler)
     * [Mapping components](#mapping-components)
     * [Exception component](#exception-component)
+    * [Private-list component](#private-list-component)
 
 <!-- TOC -->
 
@@ -163,7 +164,8 @@ Here are the explanations of its functioning:
 In the above sample configuration, the system will start with 3 threads, and accept to go up to 20 threads
 as long as the mean response time is kept under 1 second, and if less than 4 http timeouts are received.
 
-Please have a look at the provided [sample](../neterium-sdk-samples/sdk-demo-throttling/web)
+Please have a look at the
+provided [sample](https://github.com/neterium/integration-framework-samples/blob/main/sdk-demo-throttling/web)
 application to have a better understanding of the throttling mechanism:
 ![Throttler](img/throttler.png)
 
@@ -569,7 +571,8 @@ public class MyConversionService {
 }
 ```
 
-Please have a look at the provided [sample](../neterium-sdk-samples/sdk-demo-mapping/README.md)
+Please have a look at the
+provided [sample](https://github.com/neterium/integration-framework-samples/blob/main/sdk-demo-mapping/README.md)
 applications to explore all capabilities of the SDK regarding the mapping process.
 
 ---
@@ -617,3 +620,62 @@ neterium:
   exceptions:
     use-core-checksum: true
 ```
+
+---
+
+### Private-list component
+
+The SDK provides a
+Spring [PrivateListTemplate](src/main/java/com/neterium/client/sdk/privatelist/PrivateListTemplate.java)
+that can be used to build and push your own private lists to neterium servers based on regular CSV files (instead of
+XML files in OFAC format).
+
+Basically, the submitted CSV files have to include columns/headers among a **fixed set** of allowed
+[field names](src/main/java/com/neterium/client/sdk/privatelist/ListType.java) - which depends on the type of private
+lists
+
+Example for **regular** private list:
+
+```text
+ID;NAME;TYPE;ALIASES;CATS;GENDER;DOBS;IDS;ADR;POBS;NATS;VSL;ACTION
+0001;Blorin, Stanislas;Individual;Blorin, Stan.~BLS;SAN~PEP;Male;09-02-1978;passport=12345~nationalid=09876;Moscow, Russia~St. Petersburg, Russia;;FR~RU;;add
+```
+
+Example for **custom** private list:
+
+```text
+ID;PROG;NAME;ALIASES;IDS
+1;Risk Country;Belgium;Belgique~Belgie;country=be
+2;Risk Region;Namur;Namuroise;country=be
+```
+
+The parser also includes some nice features aimed at facilitating data entry:
+
+- lenient date parser, accepting multiple date formats (eg `09/02/1978`, `1978-02-09`, `09 Feb 1978`, `1978`, ...)
+- support of multi-valued fields using a configurable separator char (ie `SAN~PEP`)
+- support of dictionary-like value (ie `property1=A~property2=B`)
+- split support (ex: “Blorin, Stanislas” mapped to two distinct target fields - lastname and firstname)
+
+Sample usage:
+
+```java
+
+@Autowired
+private PrivateListTemplate template;
+
+public void pushPrivateList(String filePath) {
+    var inputCsvFile = Path.of(filePath);
+    var xmlFile = template.toXmlFormat(inputCsvFile, ListType.ENTITY_LIST);
+    var request = UploadRequest.builder()
+            .withFile(xmlFile.toFile())
+            .withListId("DEMO")
+            .withClientReference("myReference")
+            .build();
+    var id = template.uploadPrivateList(req);
+    System.out.println("List " + id + " successfully created");
+}
+```
+
+A complete example can be found in the
+provided [sample](https://github.com/neterium/integration-framework-samples/blob/main/sdk-demo-private-lists/README.md)
+application.

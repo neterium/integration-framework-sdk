@@ -2303,7 +2303,7 @@
             "style": "form",
             "explode": true,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             }
           },
           {
@@ -2314,7 +2314,7 @@
             "style": "form",
             "explode": true,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             }
           },
           {
@@ -2325,12 +2325,8 @@
             "style": "form",
             "explode": true,
             "schema": {
-              "type": "string",
-              "default": "true",
-              "enum": [
-                "true",
-                "false"
-              ]
+              "type": "boolean",
+              "default": "true"
             }
           },
           {
@@ -2427,7 +2423,7 @@
             "style": "form",
             "explode": true,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             }
           },
           {
@@ -2438,7 +2434,7 @@
             "style": "form",
             "explode": true,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             }
           },
           {
@@ -2449,12 +2445,8 @@
             "style": "form",
             "explode": true,
             "schema": {
-              "type": "string",
-              "default": "true",
-              "enum": [
-                "true",
-                "false"
-              ]
+              "type": "boolean",
+              "default": "true"
             }
           },
           {
@@ -2531,6 +2523,14 @@
             "schema": {
               "maxLength": 4,
               "minLength": 1,
+              "type": "string"
+            }
+          },
+          {
+            "name": "clientReference",
+            "in": "query",
+            "required": false,
+            "schema": {
               "type": "string"
             }
           }
