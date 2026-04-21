@@ -128,8 +128,20 @@ public class ApiClientConfig {
      * @return a {@link ExceptionsApi} instance
      */
     @Bean
-    public ExceptionsApi exceptionApi(ApiClient apiClient) {
+    public ExceptionsApi exceptionsApi(ApiClient apiClient) {
         return new ExceptionsApi(apiClient);
+    }
+
+
+    /**
+     * Expose a ready-to-use instance of {@link ListsApi} proxy
+     *
+     * @param apiClient a {@link ApiClient} instance
+     * @return a {@link ListsApi} instance
+     */
+    @Bean
+    public ListsApi listsApi(ApiClient apiClient) {
+        return new ListsApi(apiClient);
     }
 
 

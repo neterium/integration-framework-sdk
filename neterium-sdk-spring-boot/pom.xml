@@ -19,6 +19,7 @@
         <neterium-api.version>1.8.0</neterium-api.version>
         <openapi-generator.version>7.21.0</openapi-generator.version>
         <prowide.version>SRU2025-10.3.11</prowide.version>
+        <opencsv.version>5.12.0</opencsv.version>
     </properties>
 
     <dependencies>
@@ -89,6 +90,24 @@
             <version>${prowide.version}</version>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>${opencsv.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>4.0.6</version>
+            <optional>true</optional>
+        </dependency>
+
 
     </dependencies>
 
@@ -135,7 +154,7 @@
                 </configuration>
             </plugin>
 
-            <!-- OpenApi -->
+            <!-- OpenApi plugin -->
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
@@ -159,7 +178,7 @@
                             <generateModelDocumentation>false</generateModelDocumentation>
                             <generateApiTests>false</generateApiTests>
                             <generateModelTests>false</generateModelTests>
-                            <apisToGenerate>Session,Jetscan,Jetflow,Repository,Exceptions</apisToGenerate>
+                            <apisToGenerate>Session,Jetscan,Jetflow,Repository,Exceptions,Lists</apisToGenerate>
                             <configOptions>
                                 <dateLibrary>java8</dateLibrary>
                                 <useJakartaEe>true</useJakartaEe>
@@ -170,6 +189,27 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- JAXB plugin -->
+            <plugin>
+                <groupId>org.jvnet.jaxb</groupId>
+                <artifactId>jaxb-maven-plugin</artifactId>
+                <version>4.0.12</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <schemaDirectory>src/main/resources/META-INF</schemaDirectory>
+                    <schemaIncludes>
+                        <include>private.xsd</include>
+                    </schemaIncludes>
+                    <generatePackage>com.neterium.sdk.ofac</generatePackage>
+                </configuration>
             </plugin>
 
         </plugins>

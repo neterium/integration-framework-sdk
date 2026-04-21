@@ -5,10 +5,11 @@ import com.neterium.client.sdk.binding.JetScanBinder;
 import com.neterium.client.sdk.converters.Pacs008Converter;
 import com.neterium.client.sdk.converters.SwiftFinMT103Converter;
 import com.neterium.client.sdk.converters.SwiftFinMT541Converter;
-import com.neterium.client.sdk.files.DirectoryWatcher;
 import com.neterium.client.sdk.files.FileService;
 import com.neterium.client.sdk.matching.MatchVerifierClientImpl;
 import com.neterium.client.sdk.matching.MatchVerifierPassThroughImpl;
+import com.neterium.client.sdk.privatelist.PrivateListBuilder;
+import com.neterium.client.sdk.privatelist.PrivateListTemplate;
 import com.neterium.client.sdk.properties.SdkProperties;
 import com.neterium.client.sdk.screening.CounterpartScreener;
 import com.neterium.client.sdk.screening.ExceptionTemplate;
@@ -48,7 +49,9 @@ import org.springframework.context.annotation.Import;
         ThrottlerImpl.class,
         MatchVerifierClientImpl.class,
         MatchVerifierPassThroughImpl.class,
-        ExceptionTemplate.class
+        ExceptionTemplate.class,
+        PrivateListBuilder.class,
+        PrivateListTemplate.class
 })
 @EnableConfigurationProperties(SdkProperties.class)
 public class SdkConfig {
@@ -58,5 +61,5 @@ public class SdkConfig {
      */
     public SdkConfig() {
     }
-    
+
 }
