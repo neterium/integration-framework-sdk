@@ -10,7 +10,10 @@ import org.springframework.util.DigestUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.Optional;
 
 /**
@@ -24,15 +27,49 @@ import java.util.Optional;
 public class PrivateListTemplate {
 
     private final ListsApi listApi;
+    private final PrivateListBuilder listBuilder;
 
 
     /**
      * Constructor
      *
-     * @param listApi a {@link RepositoryApi} instance
+     * @param listApi     a {@link RepositoryApi} instance
+     * @param listBuilder a {@link PrivateListBuilder} instance
      */
-    public PrivateListTemplate(ListsApi listApi) {
+    public PrivateListTemplate(ListsApi listApi, PrivateListBuilder listBuilder) {
         this.listApi = listApi;
+        this.listBuilder = listBuilder;
+    }
+
+
+    /**
+     * Format CSV file using default encoding and separators
+     *
+     * @param csvFile  file to read
+     * @param listType type of list
+     * @return a private list in canonical XML format
+     * @throws Exception in case of error
+     */
+    public Path toXmlFormat(Path csvFile, ListType listType) throws Exception {
+        return this.toXmlFormat(csvFile, listType, Charset.defaultCharset(), ';', '~');
+    }
+
+
+    /**
+     * Format a CSV file using custom options
+     *
+     * @param csvFile        file to read
+     * @param listType       type of list
+     * @param charset        charset of CSV file
+     * @param fieldSeparator char used to separate fields (columns)
+     * @param valueSeparator char used to separate multiple values in a same field
+     * @return a private list in canonical XML format
+     * @throws Exception in case of error
+     */
+    public Path toXmlFormat(Path csvFile, ListType listType, Charset charset, char fieldSeparator, char valueSeparator) throws Exception {
+        try (var reader = new FileReader(csvFile.toFile(), charset)) {
+            return listBuilder.parse(reader, listType, fieldSeparator, valueSeparator);
+        }
     }
 
 
@@ -72,7 +109,7 @@ public class PrivateListTemplate {
                     checkSum,
                     request.getFile()
             );
-            log.debug("List {} successfully created ({} records)", request.getListId(), outcome.getCount());
+            log.debug("List {} successfully created ({} records)", listId, outcome.getCount());
         }
         return listId;
     }

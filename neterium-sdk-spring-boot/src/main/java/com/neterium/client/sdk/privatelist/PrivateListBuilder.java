@@ -14,9 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileReader;
-import java.nio.charset.Charset;
+import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -55,30 +53,16 @@ public class PrivateListBuilder {
 
 
     /**
-     * Read &amp; parse a CSV file using default encoding and separators
+     * Read &amp; parse a CSV data
      *
-     * @param csvFile  file to read
-     * @param listType type of list
-     * @return a private list in canonical XML format
-     * @throws Exception in case of error
-     */
-    public Path parse(File csvFile, ListType listType) throws Exception {
-        return parse(csvFile, listType, Charset.defaultCharset(), ';', '~');
-    }
-
-
-    /**
-     * Read &amp; parse a CSV file with custom options
-     *
-     * @param csvFile        file to read
+     * @param reader         reader of csv data
      * @param listType       type of list
-     * @param charset        charset of CSV file
      * @param fieldSeparator char used to separate fields (columns)
      * @param valueSeparator char used to separate multiple values in a same field
      * @return a private list in canonical XML format
      * @throws Exception in case of error
      */
-    public Path parse(File csvFile, ListType listType, Charset charset, char fieldSeparator, char valueSeparator) throws Exception {
+    public Path parse(Reader reader, ListType listType, char fieldSeparator, char valueSeparator) throws Exception {
         CSVReader csvReader = null;
         Path outputFile = null;
         SdnList xmlRoot = null;
@@ -87,7 +71,7 @@ public class PrivateListBuilder {
                     .withIgnoreLeadingWhiteSpace(true)
                     .withSeparator(fieldSeparator)
                     .build();
-            csvReader = new CSVReaderBuilder(new FileReader(csvFile, charset))
+            csvReader = new CSVReaderBuilder(reader)
                     .withCSVParser(csvParser)
                     .withKeepCarriageReturn(false)
                     .build();
