@@ -5,6 +5,8 @@ import com.neterium.client.sdk.binding.JetScanBinder;
 import com.neterium.client.sdk.converters.Pacs008Converter;
 import com.neterium.client.sdk.converters.SwiftFinMT103Converter;
 import com.neterium.client.sdk.converters.SwiftFinMT541Converter;
+import com.neterium.client.sdk.exbuilder.ExpressionBuilder;
+import com.neterium.client.sdk.exbuilder.ModelLoader;
 import com.neterium.client.sdk.files.FileService;
 import com.neterium.client.sdk.matching.MatchVerifierClientImpl;
 import com.neterium.client.sdk.matching.MatchVerifierPassThroughImpl;
@@ -51,7 +53,9 @@ import org.springframework.context.annotation.Import;
         MatchVerifierPassThroughImpl.class,
         ExceptionTemplate.class,
         PrivateListBuilder.class,
-        PrivateListTemplate.class
+        PrivateListTemplate.class,
+        ModelLoader.class,
+        ExpressionBuilder.class
 })
 @EnableConfigurationProperties(SdkProperties.class)
 public class SdkConfig {
