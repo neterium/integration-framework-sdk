@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -61,6 +62,7 @@ public class ModelLoader {
                             .toList();
                 })
                 .flatMap(Collection::stream)
+                .sorted(Comparator.comparing(Displayable::getLabel))
                 .toList();
     }
 
@@ -89,7 +91,7 @@ public class ModelLoader {
                 .orElseThrow();
     }
 
-    
+
     public List<PathDefinition> getDataPaths(boolean includeDraft) {
         return dictionary.get(DATA_PATHS_CATEGORY)
                 .stream()
@@ -97,6 +99,7 @@ public class ModelLoader {
                 .map(entry -> entry.getSyntaxes()
                         .stream()
                         .map(s -> new PathDefinition(entry, s))
+                        .sorted(Comparator.comparing(Displayable::getLabel))
                         .toList()
                 ).flatMap(Collection::stream)
                 .toList();
