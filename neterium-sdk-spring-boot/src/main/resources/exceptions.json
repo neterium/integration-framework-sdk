@@ -558,6 +558,104 @@
     "jetscan": false
   },
   {
+    "id": 9999,
+    "status": "published",
+    "sort": 25,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T22:44:31.156Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T15:39:36.452Z",
+    "title": "Request > Record Block (JetScan)",
+    "version": "April 2026",
+    "description": "Read the JSON request payload and extract the values from theJetFlow **records** block that could be required to build the exception conditions. Every field inside the **records object** can be targeted in a rule condition.\n\nData can be retrieved from:\n\n| JSON | API | Request Body schema | DataPath Pattern |\n| ------ | ------ | ------ | ------ |\n| Request   | JetFlow   | Records Block   | `transaction.<fieldName>`   |",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "request.<fieldName> <operator> '<value>'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n      \"reference\": \"Example_Transaction_Data\",\n      \"conditions\": [\n        \"transaction.purpose contains 'russia'\"\n      ]\n    }\n  ]\n}\n```\n\n**Additional examples**\n\n| Example Field |  Example Condition |\n| ------ | ------ |\n| currency   |\" transaction.currency == 'EUR' \"   |\n| amount   |\" transaction.amount == '1000' \"  |\n| debtor/name   | \" transaction.debtor.name endsWith 'LTD' \"  |\n| creditor/account/ID   | \" transaction.creditor.account.id startsWith 'BE001' \"  |\n| purpose   | \" transaction.purpose contains 'russia' \"   |\n\n",
+    "exceptionCategory": 3,
+    "syntax": [
+      "request.reference",
+      "request.type",
+      "request.object"
+    ],
+    "jetflow": false,
+    "jetscan": true
+  },
+  {
+    "id": 9998,
+    "status": "published",
+    "sort": 25,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T22:44:31.156Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T15:39:36.452Z",
+    "title": "Request > MetaData Block (JetScan)",
+    "version": "April 2026",
+    "description": "Read the JSON request payload and extract the values from theJetFlow **records** block that could be required to build the exception conditions. Every field inside the **records object** can be targeted in a rule condition.\n\nData can be retrieved from:\n\n| JSON | API | Request Body schema | DataPath Pattern |\n| ------ | ------ | ------ | ------ |\n| Request   | JetFlow   | Records Block   | `transaction.<fieldName>`   |",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "request.<fieldName> <operator> '<value>'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n      \"reference\": \"Example_Transaction_Data\",\n      \"conditions\": [\n        \"transaction.purpose contains 'russia'\"\n      ]\n    }\n  ]\n}\n```\n\n**Additional examples**\n\n| Example Field |  Example Condition |\n| ------ | ------ |\n| currency   |\" transaction.currency == 'EUR' \"   |\n| amount   |\" transaction.amount == '1000' \"  |\n| debtor/name   | \" transaction.debtor.name endsWith 'LTD' \"  |\n| creditor/account/ID   | \" transaction.creditor.account.id startsWith 'BE001' \"  |\n| purpose   | \" transaction.purpose contains 'russia' \"   |\n\n",
+    "exceptionCategory": 3,
+    "syntax": [
+      "metadata.ids",
+      "metadata.gender",
+      "metadata.dobs",
+      "metadata.places"
+    ],
+    "jetflow": false,
+    "jetscan": true
+  },
+  {
+    "id": 9997,
+    "status": "published",
+    "sort": 25,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T22:44:31.156Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T15:39:36.452Z",
+    "title": "Response > Match Block",
+    "version": "April 2026",
+    "description": "Read the JSON request payload and extract the values from theJetFlow **records** block that could be required to build the exception conditions. Every field inside the **records object** can be targeted in a rule condition.\n\nData can be retrieved from:\n\n| JSON | API | Request Body schema | DataPath Pattern |\n| ------ | ------ | ------ | ------ |\n| Request   | JetFlow   | Records Block   | `transaction.<fieldName>`   |",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "match.<fieldName> <operator> '<value>'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n      \"reference\": \"Example_Transaction_Data\",\n      \"conditions\": [\n        \"transaction.purpose contains 'russia'\"\n      ]\n    }\n  ]\n}\n```\n\n**Additional examples**\n\n| Example Field |  Example Condition |\n| ------ | ------ |\n| currency   |\" transaction.currency == 'EUR' \"   |\n| amount   |\" transaction.amount == '1000' \"  |\n| debtor/name   | \" transaction.debtor.name endsWith 'LTD' \"  |\n| creditor/account/ID   | \" transaction.creditor.account.id startsWith 'BE001' \"  |\n| purpose   | \" transaction.purpose contains 'russia' \"   |\n\n",
+    "exceptionCategory": 3,
+    "syntax": [
+      "match.screened",
+      "match.location.path",
+      "match.type",
+      "match.match",
+      "match.score",
+      "match.scoreScope",
+      "match.geoScore"
+    ],
+    "jetflow": true,
+    "jetscan": true
+  },
+  {
     "id": 13,
     "status": "published",
     "sort": 26,

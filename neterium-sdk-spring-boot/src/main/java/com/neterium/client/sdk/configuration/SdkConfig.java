@@ -5,8 +5,9 @@ import com.neterium.client.sdk.binding.JetScanBinder;
 import com.neterium.client.sdk.converters.Pacs008Converter;
 import com.neterium.client.sdk.converters.SwiftFinMT103Converter;
 import com.neterium.client.sdk.converters.SwiftFinMT541Converter;
+import com.neterium.client.sdk.exbuilder.Dictionary;
+import com.neterium.client.sdk.exbuilder.ExceptionTemplate;
 import com.neterium.client.sdk.exbuilder.ExpressionBuilder;
-import com.neterium.client.sdk.exbuilder.ModelLoader;
 import com.neterium.client.sdk.files.FileService;
 import com.neterium.client.sdk.matching.MatchVerifierClientImpl;
 import com.neterium.client.sdk.matching.MatchVerifierPassThroughImpl;
@@ -14,7 +15,6 @@ import com.neterium.client.sdk.privatelist.PrivateListBuilder;
 import com.neterium.client.sdk.privatelist.PrivateListTemplate;
 import com.neterium.client.sdk.properties.SdkProperties;
 import com.neterium.client.sdk.screening.CounterpartScreener;
-import com.neterium.client.sdk.screening.ExceptionTemplate;
 import com.neterium.client.sdk.screening.ScreeningTemplate;
 import com.neterium.client.sdk.screening.TransactionScreener;
 import com.neterium.client.sdk.security.OAuth2Client;
@@ -54,7 +54,7 @@ import org.springframework.context.annotation.Import;
         ExceptionTemplate.class,
         PrivateListBuilder.class,
         PrivateListTemplate.class,
-        ModelLoader.class,
+        Dictionary.class,
         ExpressionBuilder.class
 })
 @EnableConfigurationProperties(SdkProperties.class)

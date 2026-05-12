@@ -1,4 +1,4 @@
-package com.neterium.client.sdk.screening;
+package com.neterium.client.sdk.exbuilder;
 
 import com.neterium.client.sdk.exception.SdkException;
 import com.neterium.client.sdk.properties.SdkProperties;
@@ -6,8 +6,8 @@ import com.neterium.sdk.api.ExceptionsApi;
 import com.neterium.sdk.api.RepositoryApi;
 import com.neterium.sdk.model.CoreExceptionBody;
 import com.neterium.sdk.model.CoreExceptionRequest;
-import com.neterium.sdk.model.ProfilePublication;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -72,27 +72,28 @@ public class ExceptionTemplate {
                                            String matchedText,
                                            String profileId,
                                            boolean expireOnChecksumChange) {
-        ProfilePublication publication = null;
-        if (expireOnChecksumChange) {
-            var foundProfiles = repositoryApi.getProfile(profileId).getData();
-            if (foundProfiles.isEmpty()) {
-                log.warn("Profile {} not found", profileId);
-                throw new SdkException("Profile " + profileId + "not found ?!");
-            }
-            publication = foundProfiles.getFirst().getPublication();
-        }
-        var item = exceptionItem(screenedText, matchedText, profileId, expireOnChecksumChange, publication);
-        var body = new CoreExceptionBody()
-                .addExceptionsItem(item);
-        var outcome = exceptionsApi.createExceptions(body);
-        if (outcome.getCount().intValue() > 0) {
-            var id = outcome.getData().getFirst().getId();
-            log.info("Exception successfully created with ID {}", id);
-            return id;
-        } else {
-            log.error("");
-            throw new SdkException("Exception creation failed");
-        }
+        var request = new CoreExceptionRequest()
+                .source(screenedText)
+                .match(matchedText);
+        populateRequest(request, profileId, expireOnChecksumChange);
+        return doCreate(request);
+    }
+
+
+    public CoreExceptionRequest previewCustomException(String rawExpression,
+                                                       String profileId,
+                                                       boolean expireOnChecksumChange) {
+        var request = new CoreExceptionRequest();
+        request.getConditions().add(rawExpression);
+        populateRequest(request, profileId, expireOnChecksumChange);
+        return request;
+    }
+
+    public String createCustomException(String rawExpression,
+                                        String profileId,
+                                        boolean expireOnChecksumChange) {
+        var request = previewCustomException(rawExpression, profileId, expireOnChecksumChange);
+        return doCreate(request);
     }
 
 
@@ -114,29 +115,43 @@ public class ExceptionTemplate {
     }
 
 
-    private CoreExceptionRequest exceptionItem(String screenedText,
-                                               String matchedText,
-                                               String profileId,
-                                               boolean expire,
-                                               ProfilePublication publication) {
-        var item = new CoreExceptionRequest()
-                .reference(UUID.randomUUID().toString())
+    private void populateRequest(CoreExceptionRequest request, String profileId, boolean expire) {
+        request.reference(UUID.randomUUID().toString())
                 .clientReference(sdkProperties.getScreening().getClientReference())
-                .source(screenedText)
-                .match(matchedText)
                 .profileId(profileId);
-        if (expire) {
+        if (expire && StringUtils.isNotEmpty(profileId)) {
+
+            var foundProfiles = repositoryApi.getProfile(profileId).getData();
+            if (foundProfiles.isEmpty()) {
+                log.warn("Profile {} not found", profileId);
+                throw new SdkException("Profile " + profileId + "not found ?!");
+            }
+            var publication = foundProfiles.getFirst().getPublication();
             if (sdkProperties.getExceptions().isUseCoreCheckSum()) {
-                item.setExpirationType(CoreExceptionRequest.ExpirationTypeEnum.CORE_PROFILE);
-                item.setCoreChecksum(BigDecimal.valueOf(publication.getCoreChecksum()));
+                request.setExpirationType(CoreExceptionRequest.ExpirationTypeEnum.CORE_PROFILE);
+                request.setCoreChecksum(BigDecimal.valueOf(publication.getCoreChecksum()));
             } else {
-                item.setExpirationType(CoreExceptionRequest.ExpirationTypeEnum.PROFILE);
-                item.setProfileChecksum(BigDecimal.valueOf(publication.getChecksum()));
+                request.setExpirationType(CoreExceptionRequest.ExpirationTypeEnum.PROFILE);
+                request.setProfileChecksum(BigDecimal.valueOf(publication.getChecksum()));
             }
         } else {
-            item.setExpirationType(CoreExceptionRequest.ExpirationTypeEnum.NEVER);
+            request.setExpirationType(CoreExceptionRequest.ExpirationTypeEnum.NEVER);
         }
-        return item;
+    }
+
+
+    private String doCreate(CoreExceptionRequest request) {
+        var body = new CoreExceptionBody()
+                .addExceptionsItem(request);
+        var outcome = exceptionsApi.createExceptions(body);
+        if (outcome.getCount().intValue() > 0) {
+            var id = outcome.getData().getFirst().getId();
+            log.info("Exception successfully created with ID {}", id);
+            return id;
+        } else {
+            log.error("Unsuccessful outcome: {}", outcome.getOutcome());
+            throw new SdkException("Exception creation failed");
+        }
     }
 
 }
