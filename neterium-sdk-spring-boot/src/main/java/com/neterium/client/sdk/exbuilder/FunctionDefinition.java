@@ -32,12 +32,16 @@ public class FunctionDefinition implements Displayable, Typed {
     @JsonView(Views.Details.class)
     private final List<FunctionArg> arguments = new ArrayList<>();
 
+    @JsonView(Views.Details.class)
+    private String description;
+
 
     public FunctionDefinition(Entry entry, String syntax, int idx) {
         this.id = String.valueOf(entry.getId()) + "." + idx;
         this.label = syntax;
         this.returnType = entry.getType();
         this.name = StringUtils.substringBefore(syntax, '(');
+        this.description = entry.getDescription();
         this.grabParameters(syntax);
     }
 

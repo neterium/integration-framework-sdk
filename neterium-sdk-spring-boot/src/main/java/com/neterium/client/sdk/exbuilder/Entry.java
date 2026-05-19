@@ -35,6 +35,9 @@ public class Entry {
     @JsonProperty("format")
     private JsonNode format;
 
+    @JsonProperty("description")
+    private String description;
+
     @JsonProperty("syntax")
     private List<String> syntaxes = new ArrayList<>();
 
