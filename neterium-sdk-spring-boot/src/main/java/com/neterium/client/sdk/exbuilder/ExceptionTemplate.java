@@ -8,6 +8,7 @@ import com.neterium.sdk.model.CoreExceptionBody;
 import com.neterium.sdk.model.CoreExceptionRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -75,24 +76,30 @@ public class ExceptionTemplate {
         var request = new CoreExceptionRequest()
                 .source(screenedText)
                 .match(matchedText);
-        populateRequest(request, profileId, expireOnChecksumChange);
+        var ref = UUID.randomUUID().toString();
+        populateRequest(request, ref, profileId, expireOnChecksumChange);
         return doCreate(request);
     }
 
 
-    public CoreExceptionRequest previewCustomException(String rawExpression,
+    public CoreExceptionRequest previewCustomException(String reference,
+                                                       String expressionArray,
                                                        String profileId,
                                                        boolean expireOnChecksumChange) {
         var request = new CoreExceptionRequest();
-        request.getConditions().add(rawExpression);
-        populateRequest(request, profileId, expireOnChecksumChange);
+        var jsonArray = new JSONArray(expressionArray);
+        for (int i = 0; i < jsonArray.length(); i++) {
+            request.getConditions().add(jsonArray.get(i));
+        }
+        populateRequest(request, reference, profileId, expireOnChecksumChange);
         return request;
     }
 
-    public String createCustomException(String rawExpression,
+    public String createCustomException(String reference,
+                                        String rawExpression,
                                         String profileId,
                                         boolean expireOnChecksumChange) {
-        var request = previewCustomException(rawExpression, profileId, expireOnChecksumChange);
+        var request = previewCustomException(reference, rawExpression, profileId, expireOnChecksumChange);
         return doCreate(request);
     }
 
@@ -115,8 +122,9 @@ public class ExceptionTemplate {
     }
 
 
-    private void populateRequest(CoreExceptionRequest request, String profileId, boolean expire) {
-        request.reference(UUID.randomUUID().toString())
+    private void populateRequest(CoreExceptionRequest request, String reference,
+                                 String profileId, boolean expire) {
+        request.reference(reference)
                 .clientReference(sdkProperties.getScreening().getClientReference())
                 .profileId(profileId);
         if (expire && StringUtils.isNotEmpty(profileId)) {
