@@ -83,17 +83,22 @@ public class ExceptionTemplate {
 
 
     public CoreExceptionRequest previewCustomException(String reference,
-                                                       String expressionArray,
+                                                       String jsonExpression,
                                                        String profileId,
                                                        boolean expireOnChecksumChange) {
         var request = new CoreExceptionRequest();
-        var jsonArray = new JSONArray(expressionArray);
-        for (int i = 0; i < jsonArray.length(); i++) {
-            request.getConditions().add(jsonArray.get(i));
+        if (jsonExpression.trim().matches("\\[.*\\]")) {
+            var jsonArray = new JSONArray(jsonExpression);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                request.getConditions().add(jsonArray.get(i));
+            }
+        } else {
+            request.getConditions().add(jsonExpression);
         }
         populateRequest(request, reference, profileId, expireOnChecksumChange);
         return request;
     }
+
 
     public String createCustomException(String reference,
                                         String rawExpression,
