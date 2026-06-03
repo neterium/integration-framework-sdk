@@ -5,6 +5,7 @@ import com.neterium.sdk.api.ListsApi;
 import com.neterium.sdk.api.RepositoryApi;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 
@@ -24,6 +25,7 @@ import java.util.Optional;
  */
 @Component
 @Slf4j
+@Lazy
 public class PrivateListTemplate {
 
     private final ListsApi listApi;
