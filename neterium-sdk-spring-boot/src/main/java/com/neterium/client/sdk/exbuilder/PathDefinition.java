@@ -26,8 +26,8 @@ public class PathDefinition implements Displayable {
     private final int scope; // 2-bits mask
 
 
-    public PathDefinition(Entry entry, String syntax) {
-        this.id = String.valueOf(entry.getId());
+    public PathDefinition(Entry entry, String syntax, int idx) {
+        this.id = String.valueOf(entry.getId()) + "." + idx;
         this.name = syntax;
         this.category = entry.getTitle();
         this.scope = (entry.isJetFlow() ? 1 : 0) + (entry.isJetScan() ? 2 : 0);

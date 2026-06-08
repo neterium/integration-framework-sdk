@@ -96,11 +96,14 @@ public class Dictionary {
         return entries.get(DATA_PATHS_CATEGORY)
                 .stream()
                 .filter(this.withDraft(includeDraft))
-                .map(entry -> entry.getSyntaxes()
-                        .stream()
-                        .map(s -> new PathDefinition(entry, s))
-                        .sorted(Comparator.comparing(Displayable::getLabel))
-                        .toList()
+                .map(entry -> {
+                            var counter = new AtomicInteger();
+                            return entry.getSyntaxes()
+                                    .stream()
+                                    .map(s -> new PathDefinition(entry, s, counter.incrementAndGet()))
+                                    .sorted(Comparator.comparing(Displayable::getLabel))
+                                    .toList();
+                        }
                 ).flatMap(Collection::stream)
                 .toList();
     }
