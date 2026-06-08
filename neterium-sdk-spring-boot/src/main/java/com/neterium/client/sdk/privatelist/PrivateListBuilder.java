@@ -12,6 +12,7 @@ import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.io.Reader;
@@ -37,6 +38,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Component
+@Lazy
 public class PrivateListBuilder {
 
     private static final boolean ADD_UIDS = false;
