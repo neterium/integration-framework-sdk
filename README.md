@@ -31,9 +31,16 @@ keeping you away from technical considerations such as authentication, batching,
 
 ## Build
 
-Ensure to build the whole project (with all Maven modules) using the root [pom](pom.xml) :
+First clone Git repository:
 
 ```shell
+git clone git@github.com:neterium/integration-framework-sdk.git
+```
+
+Then build the whole project (with all Maven modules) using the root [pom](pom.xml) :
+
+```shell
+cd integration-framework-sdk
 mvn clean install
 ```
 

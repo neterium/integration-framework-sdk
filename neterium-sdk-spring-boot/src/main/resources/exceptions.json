@@ -1,0 +1,1552 @@
+[
+  {
+    "id": 59,
+    "status": "published",
+    "sort": 1,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-21T17:59:28.906Z",
+    "user_updated": null,
+    "date_updated": null,
+    "title": "getAffinity",
+    "version": null,
+    "description": "When affinity is set to trusted or auto, it will capture the affinity  applied to be applied within the exception condition",
+    "format": {
+      "conditions": [
+        "getAffinity() = 'ru'"
+      ]
+    },
+    "formatType": "string",
+    "examples": "Exception:\n```\n{\n    \"exceptions\": [\n        {\n            \"conditions\": [\n        \"getAffinity() = 'ru'\"\n           ]\n        }\n    ]\n}\n```\nScreening Request:\n```\n{\n    \"options\": {\n        \"threshold\": 85,\n        \"affinity\":\"trusted\"\n    },\n    \"records\": [\n        {\n            \"object\": {\n                \"discard\": \"Putin, Vladimir Vladimirovich\", // will discard Affinity Russia\n                \"match\": \"AL TIKRITI, SADDAM HUSSEIN\" // will raise match  Affinity Arabe\n            },\n            \"type\": \"transaction\"\n        }\n    ]\n}\n```",
+    "exceptionCategory": 1,
+    "syntax": [
+      "getAffinity()"
+    ]
+  },
+  {
+    "id": 35,
+    "status": "published",
+    "sort": 4,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-14T13:44:30.784Z",
+    "user_updated": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_updated": "2026-01-21T13:24:10.730Z",
+    "title": "hasCountryNearby",
+    "version": null,
+    "description": "**Boolean**: True when a country associated with the profile is present in the screening request field. \n**Integer**: True when the matched country has a distance in words of the defined integer value from the match. \n**Country ISO**: True when the named country is present in the screening request field.\n**Integer, Country ISO**: True when the named country has a distance in words of the defined integer value from the match.\n",
+    "format": {
+      "conditions": [
+        "hasCountryNearby() equals 'false'",
+        "hasCountryNearby(4) equals 'true'",
+        "hasCountryNearby('pt') equals 'false' ",
+        "hasCountryNearby(5,'pt') equals 'true'"
+      ]
+    },
+    "formatType": "string",
+    "examples": "Exception:\n```\n{\n    \"exceptions\": [\n        {\n            \"conditions\": [\n        \"hasCountryNearby() equals 'false'\"\n    ]\n        }\n    ]\n}\n```\n\nScreening Request:\n```\n{\n    \"options\": {\n        \"geoPolicy\" : {\"policy1\" : { \"countries\" : [\"by\",\"ir\"] } }\n    },\n    \"records\": [\n        {\n            \"object\": {\n                \"discard\": \"Pay for Shiraz Wine\",\n                \"match\": \"must be sent to Shiraz IRAN\"\n            },\n            \"type\": \"transaction\"\n        }\n    ]\n}\n            ```",
+    "exceptionCategory": 1,
+    "syntax": [
+      "hasCountryNearby()",
+      "hasCountryNearby(radius: int)",
+      "hasCountryNearby(countryCode: string)",
+      "hasCountryNearby(radius: int, countryCode: string)"
+    ]
+  },
+  {
+    "id": 29,
+    "status": "published",
+    "sort": 5,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-28T09:28:45.464Z",
+    "user_updated": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_updated": "2026-01-21T21:06:00.580Z",
+    "title": "hasCityNearby",
+    "version": null,
+    "description": "**Boolean**: True when City name of the country associated with the profile is not present in the screening request field. \n**Integer**: True when the matched city and country has a distance in words of the defined integer value from the match. \n**Country ISO**: True when a city of the named country is present in the screening request field.\n",
+    "format": {
+      "conditions": [
+        "hasCityNearby() equals 'false'",
+        "hasCityNearby(3) equals 'false'",
+        "hasCityNearby('pt') equals 'false'"
+      ]
+    },
+    "formatType": "boolean",
+    "examples": "# Boolean\nException:\n```\n{\n    \"exceptions\": [\n        {\n            \"conditions\": [\n        \"hasCityNearby() equals 'false'\"\n    ]\n        }\n    ]\n}\n```\n\nScreening Request:\n```\n{\n    \"options\": {\n        \"geoPolicy\" : {\n            \"policy1\" : { \"countries\" : [\"by\"] }\n        }\n    },\n    \"records\": [\n        {\n            \"object\": {\n                \"discard\": \"Sent by Peter\",\n                \"match\": \"sent to Minsk, by\"\n            },\n            \"type\": \"transaction\"\n        }\n    ]\n}\n```\n\n# Integer\nException:\n```\n{\n    \"exceptions\": [\n        {\n                 \"conditions\": [\n                \"hasCityNearby(3) equals 'false'\"\n            ]\n        }\n    ]\n}\n```\n\nScreening Request:\n```\n{\n    \"options\": {\n        \"geoPolicy\" : {\n            \"policy1\" : { \"countries\" : [\"by\"] }\n        }\n    },\n    \"records\": [\n        {\n            \"object\": {\n                \"discard\": \"For  Minsk must be sent by Peter\",\n                \"match\": \"For  must be Minsk sent by Peter\"\n            },\n            \"type\": \"transaction\"\n        }\n    ]\n}\n```\n\n# Country ISO\nException:\n```\n{\n    \"exceptions\": [\n        {\n            \"conditions\": [\n                \"hasCityNearby(5,'pt') equals 'true'\"\n            ]\n        }\n    ]\n}\n```\n\nScreening Request:\n```\n{\n    \"options\": {\n        \"responseContent\": {\"listContext\": false,\"screeningStats\": true,\"resolvedContent\": false,\"profileSummary\": true,\"profileAnalytics\": false,\"matchLocation\": true,\"explanation\": false},\n        \"threshold\": 85,\n        \"geoPolicy\" : {\"policy1\" : { \"countries\" : [\"by\",\"ir\"] } }\n    },\n    \"records\": [\n        {\n            \"object\": {\n            \"discard\": \"For SHIRAZ must sent country name PORTUGAL\",\n            \"match1\": \"For SHIRAZ must sent country name IRAN\",\n            \"match2\": \"For SHIRAZ must be sent IRAN\"\n            },\n            \"type\": \"transaction\"\n        }\n    ]\n}\n```\n\n",
+    "exceptionCategory": 1
+  },
+  {
+    "id": 49,
+    "status": "draft",
+    "sort": 6,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-21T15:47:49.059Z",
+    "user_updated": null,
+    "date_updated": null,
+    "title": "hasPobIn",
+    "version": null,
+    "description": "Discards based on any place of birth ISO country listed, matching in the Metadata.",
+    "format": {
+      "conditions": [
+        "hasPobIn('ru','sy')"
+      ]
+    },
+    "formatType": "string",
+    "examples": "Exception:\n```\n{\n    \"exceptions\": [\n        {\n            \"conditions\": [\n        \"hasPobIn('ru','sy')\"\n           ]\n        }\n    ]\n}\n```\n\n\nScreening Request:\n```\n{\n    \"options\": {\n        \"threshold\": 85\n    },\n    \"records\": [\n        {\n            \"type\": \"individual\",\n            \"object\": \"Vladimir Putin\",\n            \"metadata\": {\n                \"places\": [\n                    {\n                        \"country\": \"RU\",\n                        \"type\": \"pob\"\n                    },\n                    {\n                        \"country\": \"UA\",\n                        \"type\": \"address\"\n                    }\n                ]\n            }\n        },\n        {\n            \"type\": \"individual\",\n            \"object\": \"Saddam Hussein\",\n            \"metadata\": {\n                \"places\": [\n                    {\n                        \"country\": \"IQ\",\n                        \"type\": \"pob\"\n                    },\n                    {\n                        \"country\": \"SY\",\n                        \"type\": \"address\"\n                    }\n                ]\n            }\n        }\n    ]\n}\n```",
+    "exceptionCategory": 1
+  },
+  {
+    "id": 23,
+    "status": "published",
+    "sort": 7,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T22:36:26.659Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-09T13:39:15.361Z",
+    "title": "=",
+    "version": "April 2026",
+    "description": "\nThe  **=** (Equal To) (loose equals) operator returns a true result only if the value on the left is exactly the same as the value on the right. Ignores minor formatting differences  such as capitalisation, or special characters to ensure two values are functionally identical.\n\n**Additional examples**\n| Screened Name | Condition Name | Discarded |\n| ------ | ------ | ------ |\n| Vladimir Putin  | Vladimir Putin   | **true**   |\n| vladimir putin    | Vladimir Putin   | **true**   |\n| vládimir pÚtin   | Vladimir Putin   | **true**   |\n| vládimir pÚtin**o**| Vladimir Putin   | false   |\n",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "<dataPath> = '<value>'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n    \"reference\": \"Example_equalsLoose\",\n      \"conditions\": [\n         \"match.screened = 'Vladimir Putin'\" // screened value: vládimir pútin\n      ]\n    }\n  ]\n}\n```\n",
+    "exceptionCategory": 2
+  },
+  {
+    "id": 21,
+    "status": "published",
+    "sort": 8,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T22:25:32.737Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-09T13:40:28.777Z",
+    "title": "== ",
+    "version": "April 2026",
+    "description": "\nThe  **==** (Equal To) (equals) operator returns a true result only if the value on the left is exactly the same as the value on the right. Ignores  capitalisation to ensure two values are functionally identical.\n\nOperator available for the *scopeFilter* options*\n\n**Additional examples**\n| Screened Name | Condition Name | Discarded |\n| ------ | ------ | ------ |\n| Vladimir Putin  | Vladimir Putin   | **true**   |\n| **v**ladimir **p**utin    | Vladimir Putin   | **true**   |\n| vl**á**dimir p**Ú**tin   | Vladimir Putin   | false   |\n| vládimir pÚtin**o**| Vladimir Putin   | false   |\n\n",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "<dataPath> == '<value>'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n    \"reference\": \"Example_equals\",\n      \"conditions\": [\n         \"match.screened == 'Vladimir Putin'\" // screened value: vladimir putin\n      ]\n    }\n  ]\n}\n```",
+    "exceptionCategory": 2
+  },
+  {
+    "id": 22,
+    "status": "published",
+    "sort": 9,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T22:27:43.125Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-09T13:39:22.492Z",
+    "title": "=== ",
+    "version": "April 2026",
+    "description": "The  **===**  (Equal To)(Strict) operator returns a true result only if the value on the left is exactly the same as the value on the right and the data must be exactly the same down to the byte.\n\n**Additional examples**\n| Screened Name | Condition Name | Discarded |\n| ------ | ------ | ------ |\n| Vladimir Putin  | Vladimir Putin   | **true**   |\n| **v**ladimir **p**utin    | Vladimir Putin   | false   |\n| vl**á**dimir p**Ú**tin   | Vladimir Putin   | false   |\n| vládimir pÚtin**o**| Vladimir Putin   | false   |\n",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "<dataPath> === '<value>'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n     \"reference\": \"Example_equalsStrict\",\n      \"conditions\": [\n         \"match.screened == 'Vladimir Putin'\" // screened value: Vladimir Putin\n      ]\n    }\n  ]\n}\n```\n",
+    "exceptionCategory": 2
+  },
+  {
+    "id": 66,
+    "status": "published",
+    "sort": 10,
+    "user_created": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_created": "2026-04-08T13:37:05.953Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-09T13:41:06.479Z",
+    "title": "!=",
+    "version": "April 2026",
+    "description": "The  **!=** (not Equal To) operator returns a true result if the value on the left is different from the value on the right.\n\n**Additional examples**\n| Screened Name | Condition Name | Discarded |\n| ------ | ------ | ------ |\n| Vladimir Putin  | Vladimir Putin   | false   |\n| vladimir putin    | Vladimir Putin   | false   |\n| vládimir pÚtin   | Vladimir Putin   | false   |\n| vládimir pÚtin**o**| Vladimir Putin   | **true**   |\n",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "<dataPath> != '<value>'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n    \"reference\": \"Example_equalsLoose\",\n      \"conditions\": [\n         \"match.screened != 'Vladimir Putin'\" // screened value: vládimir pÚtino\n      ]\n    }\n  ]\n}\n```",
+    "exceptionCategory": 2
+  },
+  {
+    "id": 5,
+    "status": "published",
+    "sort": 11,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T11:22:35.021Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-09T14:04:33.211Z",
+    "title": ">",
+    "version": "April 2026",
+    "description": "The **>** (Greater Than) operator returns a  true result if the value on the left is numerically larger or chronologically later than the value on the right.",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "<dataPath> > <number>"
+          ]
+        }
+      ]
+    },
+    "formatType": "integer",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n     \"reference\": \"Example_greaterThan\",\n      \"conditions\": [\n          \"match.geoScore > '10'\"\n      ]\n    }\n  ]\n}\n```",
+    "exceptionCategory": 2
+  },
+  {
+    "id": 7,
+    "status": "published",
+    "sort": 12,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T11:25:20.347Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-09T14:02:55.161Z",
+    "title": ">=",
+    "version": "April 2026",
+    "description": "The  **>=** (Greater Than or Equal To) operator returns a true result if the value on the left is numerically larger than or exactly equal to the value on the right.\n",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "<dataPath> >= <number>"
+          ]
+        }
+      ]
+    },
+    "formatType": "integer",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n\t \"reference\": \"Example_greaterThan_ or_equalTo\",\n      \"conditions\": [\n          \"match.geoScore >= '10'\"\n      ]\n    }\n  ]\n}\n```",
+    "exceptionCategory": 2
+  },
+  {
+    "id": 6,
+    "status": "published",
+    "sort": 13,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T11:23:02.606Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-09T14:06:49.106Z",
+    "title": "<",
+    "version": "April 2026",
+    "description": "The **<**  (Less Than) operator returns a  true result if the value on the left is numerically smaller or chronologically earlier than the value on the right.",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "dataPath < number(int)"
+          ]
+        }
+      ]
+    },
+    "formatType": "integer",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n      \"reference\": \"Example_lessThan\",\n      \"conditions\": [\n        \"transaction.amount < 80\"\n      ]\n    }\n  ]\n}\n```",
+    "exceptionCategory": 2
+  },
+  {
+    "id": 8,
+    "status": "published",
+    "sort": 14,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T11:27:06.666Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T13:23:51.498Z",
+    "title": "<=",
+    "version": "April 2026",
+    "description": "The  **<=**   (Less Than or Equal To) operator returns a  true  result if the value on the left is numerically smaller than or exactly equal to the value on the right.",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "<dataPath> <= <number>"
+          ]
+        }
+      ]
+    },
+    "formatType": "integer",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n\t  \"reference\": \"Example_lessThan_ or_equalTo\",\n      \"conditions\": [\n        \"match.score <= 85\"\n      ]\n    }\n  ]\n}\n```",
+    "exceptionCategory": 2
+  },
+  {
+    "id": 62,
+    "status": "published",
+    "sort": 15,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-21T21:15:53.219Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T10:59:57.344Z",
+    "title": "and",
+    "version": "April 2026",
+    "description": "The **AND** operator returns a  true result only if all specified conditions are met simultaneously.\n\nOperator available for the *scopeFilter* options",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "<dataPath> == '<value>' and <dataPath> == '<value>'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n      \"reference\": \"Example_and\",\n      \"conditions\": [\n        \"transaction.purpose ==  'russia' and transaction.currency == 'eur' \"\n      ]\n    }\n  ]\n}\n```",
+    "exceptionCategory": 2
+  },
+  {
+    "id": 63,
+    "status": "published",
+    "sort": 16,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-21T21:16:55.805Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T13:22:45.728Z",
+    "title": "or",
+    "version": "April 2026",
+    "description": "The **OR** operator returns a  true result if at least one of the specified conditions is met.\n",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "<dataPath> == 'value' or <dataPath> =='value'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n      \"reference\": \"Example_or\",\n      \"conditions\": [\n        \"transaction.currency == 'USD' or profileSummary.type=='entity' \"\n      ]\n    }\n  ]\n}\n```",
+    "exceptionCategory": 2
+  },
+  {
+    "id": 17,
+    "status": "published",
+    "sort": 17,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T21:29:22.633Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T13:22:35.598Z",
+    "title": "in",
+    "version": "April 2026",
+    "description": "The **IN** operator returns a true result if a value matches any item within a specified list or collection\n\nOperator available for the *scopeFilter* options",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "<dataPath> in ['<value>','<value>']"
+          ]
+        }
+      ]
+    },
+    "formatType": "list",
+    "examples": " ```\n{\n  \"exceptions\": [\n    {\n      \"reference\": \"Example_in\",\n      \"conditions\": [\n        \"transaction.currency in ['USD','EUR']\"\n      ]\n    }\n  ]\n}\n```",
+    "exceptionCategory": 2
+  },
+  {
+    "id": 18,
+    "status": "published",
+    "sort": 18,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T21:30:57.786Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T13:22:12.455Z",
+    "title": "not in",
+    "version": "April 2026",
+    "description": "The **NOT IN** operator returns a true result if no value matches any item within a specified list or collection",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "dataPath not in ['value','value']"
+          ]
+        }
+      ]
+    },
+    "formatType": "list",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n\t  \"reference\": \"Example_not_in,\n      \"conditions\": [\n        \"metadata.places.country  not in ['ru','pt']\"\n      ]\n    }\n  ]\n}\n```",
+    "exceptionCategory": 2
+  },
+  {
+    "id": 10,
+    "status": "published",
+    "sort": 19,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T18:50:51.027Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T13:21:52.445Z",
+    "title": "contains",
+    "version": "April 2026",
+    "description": "The **CONTAINS** operator returns a true result if a specific value, string, or item is found within a larger set or text block.\n\nOperator available for the *scopeFilter* options",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "<dataPath> contains '<value>'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n      \"reference\": \"Example_contains\",\n      \"conditions\": [\n        \"match.match  contains 'Vladimirovich' \"\n      ]\n    }\n  ]\n}\n```",
+    "exceptionCategory": 2
+  },
+  {
+    "id": 12,
+    "status": "published",
+    "sort": 20,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T18:56:12.864Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T13:21:24.258Z",
+    "title": "containsAll",
+    "version": "April 2026",
+    "description": "The **containsAll** operator returns a true result only if every single item from a specified list is present within the target set.",
+    "format": {
+      "conditions": [
+        "<dataPath> containsAll ['value','value']"
+      ]
+    },
+    "formatType": "list",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n     \"reference\": \"Example_containsAll\",\n     \"conditions\": [\n        \"match.match  containsAll  ['Putin','Vladimirovich']\"\n      ]\n    }\n  ]\n}\n```",
+    "exceptionCategory": 2
+  },
+  {
+    "id": 11,
+    "status": "published",
+    "sort": 21,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T18:53:37.498Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T13:20:51.828Z",
+    "title": "not contains",
+    "version": "April 2026",
+    "description": "The **NOT CONTAINS** operator returns a true result if a specific value, string, or item is missing from the target  set or text block.\n\nOperator available for the *scopeFilter* options",
+    "format": {
+      "conditions": [
+        "<dataPath>  not contains '<value>'"
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n      \"reference\": \"Example_not_contains\",\n      \"conditions\": [\n        \"match.match  not contains 'Vladimirovich' \"\n      ]\n    }\n  ]\n}\n```",
+    "exceptionCategory": 2
+  },
+  {
+    "id": 15,
+    "status": "published",
+    "sort": 22,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T21:16:58.710Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T13:20:33.755Z",
+    "title": "startsWith",
+    "version": "April 2026",
+    "description": "The **startsWith** operator returns a true  result if a text string begins with a specific sequence of characters.",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "<dataPath> startsWith '<value>'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n      \"reference\": \"Example_startsWith\",\n      \"conditions\": [\n        \"match.profileId startsWith  'OFAC'\" \n      ]\n    }\n  ]\n}\n```",
+    "exceptionCategory": 2
+  },
+  {
+    "id": 16,
+    "status": "published",
+    "sort": 23,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T21:20:05.593Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T13:20:19.706Z",
+    "title": "not startsWith",
+    "version": "April 2026",
+    "description": "The **not startsWith** operator returns a true result if a text string does not begins with a specific sequence of characters.",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "<dataPath> not startsWith '<value>'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n     \"reference\": \"Example_not_startsWith\",\n      \"conditions\": [\n        \"match.profileId not startsWith  'OFAC'\" \n      ]\n    }\n  ]\n}\n```",
+    "exceptionCategory": 2
+  },
+  {
+    "id": 25,
+    "status": "published",
+    "sort": 24,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T22:42:25.641Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T17:01:38.086Z",
+    "title": "Request > Context Block",
+    "version": "April 2026",
+    "description": "Read the JSON request payload and extract the values from the JetScan/JetFlow **context** block that could be required to build the exception conditions. Every field inside the **context object ** can be targeted in a rule condition.\n\nData can be retrieved from:\n\n| JSON | API | Request Body schema | DataPath Pattern |\n| ------ | ------ | ------ | ------ |\n| Request   | JetScan/JetFlow   | Context Block   | `context.<fieldName>`   |\n",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "context.<fieldName> <operator> '<value>'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "\n```\n{\n  \"exceptions\": [\n    {\n      \"reference\": \"Example_Variable_Data\",\n      \"conditions\": [\n        \"context.clientReference startWith 'ABC'\"\n      ]\n    }\n  ]\n}\n```\n\n**Additional examples**\n\n| Example Field |  Example Condition |\n| ------ | ------ |\n| projectReference   | \"context.projectReference startWith 'PROJECT' \"  |\n| reference   | \"context.reference == 'REF1' \"  |\n| myCustomer   | \"context.myCustomer endsWith '001' \"  |\n",
+    "exceptionCategory": 3,
+    "syntax": [
+      "context.clientReference",
+      "context.projectReference",
+      "context.reference"
+    ],
+    "jetflow": true,
+    "jetscan": true
+  },
+  {
+    "id": 26,
+    "status": "published",
+    "sort": 25,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T22:44:31.156Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T15:39:36.452Z",
+    "title": "Request > Record Block (JetFlow)",
+    "version": "April 2026",
+    "description": "Read the JSON request payload and extract the values from theJetFlow **records** block that could be required to build the exception conditions. Every field inside the **records object** can be targeted in a rule condition.\n\nData can be retrieved from:\n\n| JSON | API | Request Body schema | DataPath Pattern |\n| ------ | ------ | ------ | ------ |\n| Request   | JetFlow   | Records Block   | `transaction.<fieldName>`   |",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "transaction.<fieldName> <operator> '<value>'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n      \"reference\": \"Example_Transaction_Data\",\n      \"conditions\": [\n        \"transaction.purpose contains 'russia'\"\n      ]\n    }\n  ]\n}\n```\n\n**Additional examples**\n\n| Example Field |  Example Condition |\n| ------ | ------ |\n| currency   |\" transaction.currency == 'EUR' \"   |\n| amount   |\" transaction.amount == '1000' \"  |\n| debtor/name   | \" transaction.debtor.name endsWith 'LTD' \"  |\n| creditor/account/ID   | \" transaction.creditor.account.id startsWith 'BE001' \"  |\n| purpose   | \" transaction.purpose contains 'russia' \"   |\n\n",
+    "exceptionCategory": 3,
+    "syntax": [
+      "transaction.currency",
+      "transaction.amount",
+      "transaction.debtor.name",
+      "transaction.creditor.account.id",
+      "transaction.purpose"
+    ],
+    "jetflow": true,
+    "jetscan": false
+  },
+  {
+    "id": 9999,
+    "status": "published",
+    "sort": 25,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T22:44:31.156Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T15:39:36.452Z",
+    "title": "Request > Record Block (JetScan)",
+    "version": "April 2026",
+    "description": "Read the JSON request payload and extract the values from theJetFlow **records** block that could be required to build the exception conditions. Every field inside the **records object** can be targeted in a rule condition.\n\nData can be retrieved from:\n\n| JSON | API | Request Body schema | DataPath Pattern |\n| ------ | ------ | ------ | ------ |\n| Request   | JetFlow   | Records Block   | `transaction.<fieldName>`   |",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "request.<fieldName> <operator> '<value>'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n      \"reference\": \"Example_Transaction_Data\",\n      \"conditions\": [\n        \"transaction.purpose contains 'russia'\"\n      ]\n    }\n  ]\n}\n```\n\n**Additional examples**\n\n| Example Field |  Example Condition |\n| ------ | ------ |\n| currency   |\" transaction.currency == 'EUR' \"   |\n| amount   |\" transaction.amount == '1000' \"  |\n| debtor/name   | \" transaction.debtor.name endsWith 'LTD' \"  |\n| creditor/account/ID   | \" transaction.creditor.account.id startsWith 'BE001' \"  |\n| purpose   | \" transaction.purpose contains 'russia' \"   |\n\n",
+    "exceptionCategory": 3,
+    "syntax": [
+      "request.reference",
+      "request.type",
+      "request.object"
+    ],
+    "jetflow": false,
+    "jetscan": true
+  },
+  {
+    "id": 9998,
+    "status": "published",
+    "sort": 25,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T22:44:31.156Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T15:39:36.452Z",
+    "title": "Request > MetaData Block (JetScan)",
+    "version": "April 2026",
+    "description": "Read the JSON request payload and extract the values from theJetFlow **records** block that could be required to build the exception conditions. Every field inside the **records object** can be targeted in a rule condition.\n\nData can be retrieved from:\n\n| JSON | API | Request Body schema | DataPath Pattern |\n| ------ | ------ | ------ | ------ |\n| Request   | JetFlow   | Records Block   | `transaction.<fieldName>`   |",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "request.<fieldName> <operator> '<value>'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n      \"reference\": \"Example_Transaction_Data\",\n      \"conditions\": [\n        \"transaction.purpose contains 'russia'\"\n      ]\n    }\n  ]\n}\n```\n\n**Additional examples**\n\n| Example Field |  Example Condition |\n| ------ | ------ |\n| currency   |\" transaction.currency == 'EUR' \"   |\n| amount   |\" transaction.amount == '1000' \"  |\n| debtor/name   | \" transaction.debtor.name endsWith 'LTD' \"  |\n| creditor/account/ID   | \" transaction.creditor.account.id startsWith 'BE001' \"  |\n| purpose   | \" transaction.purpose contains 'russia' \"   |\n\n",
+    "exceptionCategory": 3,
+    "syntax": [
+      "metadata.ids",
+      "metadata.gender",
+      "metadata.dobs",
+      "metadata.places"
+    ],
+    "jetflow": false,
+    "jetscan": true
+  },
+  {
+    "id": 9997,
+    "status": "published",
+    "sort": 25,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T22:44:31.156Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T15:39:36.452Z",
+    "title": "Response > Match Block",
+    "version": "April 2026",
+    "description": "Read the JSON request payload and extract the values from theJetFlow **records** block that could be required to build the exception conditions. Every field inside the **records object** can be targeted in a rule condition.\n\nData can be retrieved from:\n\n| JSON | API | Request Body schema | DataPath Pattern |\n| ------ | ------ | ------ | ------ |\n| Request   | JetFlow   | Records Block   | `transaction.<fieldName>`   |",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "match.<fieldName> <operator> '<value>'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n      \"reference\": \"Example_Transaction_Data\",\n      \"conditions\": [\n        \"transaction.purpose contains 'russia'\"\n      ]\n    }\n  ]\n}\n```\n\n**Additional examples**\n\n| Example Field |  Example Condition |\n| ------ | ------ |\n| currency   |\" transaction.currency == 'EUR' \"   |\n| amount   |\" transaction.amount == '1000' \"  |\n| debtor/name   | \" transaction.debtor.name endsWith 'LTD' \"  |\n| creditor/account/ID   | \" transaction.creditor.account.id startsWith 'BE001' \"  |\n| purpose   | \" transaction.purpose contains 'russia' \"   |\n\n",
+    "exceptionCategory": 3,
+    "syntax": [
+      "match.screened",
+      "match.location.path",
+      "match.type",
+      "match.match",
+      "match.score",
+      "match.scoreScope",
+      "match.geoScore"
+    ],
+    "jetflow": true,
+    "jetscan": true
+  },
+  {
+    "id": 13,
+    "status": "published",
+    "sort": 26,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T21:12:28.936Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T13:15:30.487Z",
+    "title": "endsWith",
+    "version": "April 2026",
+    "description": "The **endsWith** operator returns a true result if a text string finishes with a specific sequence of characters.",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "<dataPath> endsWith '<value>'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n      \"reference\": \"Example_endsWith\",\n      \"conditions\": [\n        \"context.clientReference endsWith 'ABC'\"\n      ]\n    }\n  ]\n}\n```",
+    "exceptionCategory": 2
+  },
+  {
+    "id": 14,
+    "status": "published",
+    "sort": 27,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T21:14:12.443Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T13:19:41.788Z",
+    "title": "not endsWith",
+    "version": "April 2026",
+    "description": "The **not endsWith** operator returns a true result if a text string does not finish with a specific sequence of characters.",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "<dataPath>  not endsWith '<value>'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n      \"reference\": \"Example_not_endsWith\",\n      \"conditions\": [\n        \"context.clientReference not endsWith 'ABC'\"\n      ]\n    }\n  ]\n}\n```",
+    "exceptionCategory": 2
+  },
+  {
+    "id": 19,
+    "status": "published",
+    "sort": 28,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T21:33:03.720Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T11:05:14.803Z",
+    "title": "exists",
+    "version": "April 2026",
+    "description": "The **EXISTS** operator returns a \"True\" result if the specified  field is present in the request and contains any value (even if that value is zero or an empty string).",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "<dataPath> exists"
+          ]
+        }
+      ]
+    },
+    "formatType": "boolean",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n      \"conditions\": [\n        \"metadata.dob  exists\"\n      ]\n    }\n  ]\n}\n```",
+    "exceptionCategory": 2
+  },
+  {
+    "id": 20,
+    "status": "published",
+    "sort": 29,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T21:36:16.048Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T11:05:37.703Z",
+    "title": "not exists",
+    "version": "April 2026",
+    "description": "The **NOT EXISTS** operator returns a true result only if the specified  field is present in the request is completely missing or null.\n",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "<dataPath> not exists"
+          ]
+        }
+      ]
+    },
+    "formatType": "boolean",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n      \"conditions\": [\n        \"metadata.dob  not exists\"\n      ]\n    }\n  ]\n}\n```",
+    "exceptionCategory": 2
+  },
+  {
+    "id": 27,
+    "status": "published",
+    "sort": 30,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T22:49:31.664Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T15:39:05.786Z",
+    "title": "Request > Record Block (JetScan)",
+    "version": "April 2026",
+    "description": "Read the JSON request payload and extract the values from the JetScan **records** block that could be required to build the exception conditions. Every field inside the **records object** can be targeted in a rule condition.\n\nData can be retrieved from:\n\n| JSON | API | Request Body schema | DataPath Pattern |\n| ------ | ------ | ------ | ------ |\n| Request   | JetScan   | Records Block   | `request.<fieldName>`   |",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "request.<fieldName> <operator> '<value>'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n      \"reference\": \"Example_Request_Data\",\n      \"conditions\": [\n        \"request.type == 'entity'\"\n      ]\n    }\n  ]\n}\n```\n\n**Additional examples**\n\n| Example Field |  Example Condition |\n| ------ | ------ |\n| type   | \"request.type == 'entity' \"   |\n| reference | \"request.reference startsWith 'BE001' \"  |\n| object   | \"request.object contains 'LTD' \"   |\n\n\n",
+    "exceptionCategory": 3
+  },
+  {
+    "id": 28,
+    "status": "published",
+    "sort": 31,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-26T07:42:39.858Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T16:35:04.083Z",
+    "title": "Request > Record.Metadata Block (JetScan)",
+    "version": "April 2026",
+    "description": "\nRead the JSON request payload and extract the values from the JetScan **records** block that could be required to build the exception conditions. Every field inside the **records.metadata object** can be targeted in a rule condition.\n\nData can be retrieved from:\n\n| JSON | API | Request Body schema | DataPath Pattern |\n| ------ | ------ | ------ | ------ |\n| Request   | JetScan   | Records Metadata Block   | `metadata.<fieldName>`   |",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "metadata.<fieldName> <operator> '<value>'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n      \"reference\": \"Example_Request_Data\",\n      \"conditions\": [\n        \"metadata.gender == 'male'\"\n      ]\n    }\n  ]\n}\n```\n\n**Additional examples**\n\n| Example Field |  Example Condition |\n| ------ | ------ |\n| dobs   | \"metadata.dobs == '1974'\"   |\n| gender |  \"metadata.gender == 'male'\"  |\n| ids   | \"metadata.ids in  ['12345','7789'] \" |\n| places/country   | \"metadata.places.country startsWith 'ru' \"  |\n",
+    "exceptionCategory": 3
+  },
+  {
+    "id": 9,
+    "status": "published",
+    "sort": 32,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T11:35:16.431Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T12:15:51.085Z",
+    "title": "between",
+    "version": "April 2026",
+    "description": "The **BETWEEN** operator returns a true result if a value falls within a specific range, including both the start and end boundary values. Where the start value is lower than the end value\n\n**Additional examples**\n| Amount | StartNumber1 | EndNumber2 | Discarded |\n| ------ | ------ | ------ | ------ |\n| 35   | 30   | 60   | True   |\n| 30   | 30   | 60   | True   |\n| 29   | 30   | 60   | False   |\n| 35   | 60   | 30   | False   |",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "<dataPath> between [startNumber, endNumber]"
+          ]
+        }
+      ]
+    },
+    "formatType": "range",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n      \"conditions\": [\n         \"transaction.amount between [30, 60]\"\n      ]\n    }\n  ]\n}\n```",
+    "exceptionCategory": 2
+  },
+  {
+    "id": 24,
+    "status": "published",
+    "sort": 33,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-25T22:37:53.873Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T14:27:48.724Z",
+    "title": "equals",
+    "version": "April 2026",
+    "description": "The  **equals** (Equal To) (loose equals) operator returns a true result only if the value on the left is exactly the same as the value on the right. Ignores minor formatting differences  such as capitalisation, or special characters to ensure two values are functionally identical. Same behaviour as operator \"=\"\n\n**Additional examples**\n| Screened Name | Condition Name | Discarded |\n| ------ | ------ | ------ |\n| Vladimir Putin  | Vladimir Putin   | true   |\n| vladimir putin    | Vladimir Putin   | true   |\n| vládimir pÚtin   | Vladimir Putin   | true   |\n| vládimir pÚtin**o**| Vladimir Putin   | false   |\n\n",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "<dataPath> equals '<value>'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n    \"reference\": \"Example_equals\",\n      \"conditions\": [\n         \"match.screened == 'Vladimir Putin'\" // screened value: vladimir putin\n      ]\n    }\n  ]\n}\n```",
+    "exceptionCategory": 2
+  },
+  {
+    "id": 67,
+    "status": "published",
+    "sort": 34,
+    "user_created": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_created": "2026-04-08T14:24:48.481Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T14:26:30.495Z",
+    "title": "not equals",
+    "version": "April 2026",
+    "description": "The  **not equals** (not Equal To) operator returns a true result if the value on the left is different from the value on the right. Same behaviour as operator \"!=\"\n\n**Additional examples**\n| Screened Name | Condition Name | Discarded |\n| ------ | ------ | ------ |\n| Vladimir Putin  | Vladimir Putin   | false   |\n| vladimir putin    | Vladimir Putin   | false   |\n| vládimir pÚtin   | Vladimir Putin   | false   |\n| vládimir pÚtin**o**| Vladimir Putin   | true   |\n",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "<dataPath> != '<value>'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n    \"reference\": \"Example_equalsLoose\",\n      \"conditions\": [\n         \"match.screened not equals 'Vladimir Putin'\" // screened value: vládimir pÚtino\n      ]\n    }\n  ]\n}\n```",
+    "exceptionCategory": 2
+  },
+  {
+    "id": 30,
+    "status": "draft",
+    "sort": 35,
+    "user_created": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_created": "2025-12-12T15:14:23.052Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2025-12-12T16:23:45.720Z",
+    "title": "Whitelisting Exception",
+    "version": null,
+    "description": "Whitelisting Exception \n\n| Header | Header |\n| ------ | ------ |\n| Function   | Add Info    |\n| Value   | Add Info   |\n\n- Function \n- Value",
+    "format": {
+      "exceptions": [
+        {
+          "reference": "exception_whitelist",
+          "function": "value"
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n    \"exceptions\": [\n        {\n            \"reference\": \"exception_whitelist\",\n            \"profileId\": \"OFAC000000000001\",\n           \"match\":\"Doe,John\",\n           \"source\":\"john doe\"\n        }\n    ]\n}\n```",
+    "exceptionCategory": 4
+  },
+  {
+    "id": 31,
+    "status": "draft",
+    "sort": 36,
+    "user_created": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_created": "2025-12-12T15:21:14.809Z",
+    "user_updated": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_updated": "2025-12-29T10:23:28.733Z",
+    "title": "Technical Exceptions: Data (string)",
+    "version": null,
+    "description": "Technical Exception using data (string version) \n \n- Data - could have a link to the Data section\n- Operator [Link to Operator](https://dashboard.dev.k8s.neterium.cloud/documentation/exceptions) - could have a link to the Operator secntion\n- Value - string values.",
+    "format": {
+      "exceptions": [
+        {
+          "reference": "Exception_technical_data_string",
+          "conditions": [
+            "DATA OPERATOR 'VALUE'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n    \"exceptions\": [\n        {\n            \"reference\": \"Exception_technical_data_string\",\n            \"profileId\": \"OFAC000000000001\",\n            \"conditions\": \n             [\n                \"transaction.purpose contains 'neterium'\"\n            ]\n        }\n    ]\n}\n```",
+    "exceptionCategory": 4
+  },
+  {
+    "id": 33,
+    "status": "draft",
+    "sort": 37,
+    "user_created": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_created": "2025-12-12T16:03:04.079Z",
+    "user_updated": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_updated": "2025-12-29T10:23:44.255Z",
+    "title": "Technical Exceptions: Data (block)",
+    "version": null,
+    "description": "Technical Exception using data (block version) ",
+    "format": {
+      "exceptions": [
+        {
+          "reference": "Exception_technical_string_data",
+          "conditions": [
+            {
+              "path": "path",
+              "operator": "OPERATOR",
+              "value": "VALUE"
+            }
+          ]
+        }
+      ]
+    },
+    "formatType": "block",
+    "examples": "```\n{\n    \"exceptions\": [\n        {\n            \"reference\": \"Exception_technical_string_data\",\n            \"profileId\": \"OFAC000000000001\",\n            \"conditions\": [\n                {\n                    \"path\": \"transaction.purpose\",\n                    \"operator\": \"contains\",  \n                    \"value\": \"Neterium\" \n                }\n            ]\n        }\n    ]\n}\n```",
+    "exceptionCategory": 4
+  },
+  {
+    "id": 32,
+    "status": "draft",
+    "sort": 38,
+    "user_created": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_created": "2025-12-12T15:28:24.895Z",
+    "user_updated": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_updated": "2025-12-29T10:24:19.583Z",
+    "title": "Technical Exceptions: Function (string)",
+    "version": null,
+    "description": "Technical Exception using functions (string version) \n \n- Condition Functions \n- Operator\n- Value",
+    "format": {
+      "exceptions": [
+        {
+          "reference": "Exception_technical_function_string",
+          "function": "value",
+          "conditions": [
+            "Condition_function OPERATOR 'VALUE' "
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n    \"exceptions\": [\n        {\n            \"reference\": \"Exception_technical_function_string\",\n            \"profileId\": \"OFAC000000000001\",\n            \"conditions\": \n            [\n                \"extendedSource() == 'Doe' \"\n            ]\n        }\n    ]\n}\n```",
+    "exceptionCategory": 4
+  },
+  {
+    "id": 34,
+    "status": "draft",
+    "sort": 39,
+    "user_created": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_created": "2025-12-12T16:07:52.373Z",
+    "user_updated": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_updated": "2025-12-29T10:24:02.006Z",
+    "title": "Technical Exceptions: Function (block)",
+    "version": null,
+    "description": "Technical Exception using functions (block version).",
+    "format": {
+      "exceptions": [
+        {
+          "reference": "Exception_technical_function_block",
+          "function": "value",
+          "conditions": [
+            {
+              "path": "condition_function",
+              "operator": "OPERATOR",
+              "value": "VALUE"
+            }
+          ]
+        }
+      ]
+    },
+    "formatType": "block",
+    "examples": "```\n{\n    \"exceptions\": [\n        {\n            \"reference\": \"Exception_technical_function_block\",\n            \"profileId\": \"OFAC000000000001\",\n            \"conditions\": [\n                {\n                    \"path\": \"extendedSource()\",\n                    \"operator\": \"==\",\n                    \"value\": \"Doe\"\n                }\n            ]\"\n        }\n    ]\n}\n```",
+    "exceptionCategory": 4
+  },
+  {
+    "id": 44,
+    "status": "published",
+    "sort": 40,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-21T13:43:48.210Z",
+    "user_updated": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_updated": "2026-01-21T14:07:01.083Z",
+    "title": "extendedSource",
+    "version": null,
+    "description": "**Boolean**: Finds patterns up to 3 words before and after the screened name: `extendedSource = prefix(3words) + screened name + suffix(3words)`\n**Integer**: Finds patterns the specified number of words before and after the screened name: `extendedSource = prefix(number of words before) + screened name + suffix(number of words after)`\n",
+    "format": {
+      "conditions": [
+        "extendedSource()= 'Worton' ",
+        "extendedSource(6) contains  'Worton' ",
+        "extendedSource(6,false) contains 'Worton' "
+      ]
+    },
+    "formatType": "string",
+    "examples": "Exception:\n```\n{\n    \"exceptions\": [\n        {\n            \"conditions\": [\n                \"extendedSource()= 'Worton' \"\n            ]\n        }\n    ]\n}\n```\n\nScreening Request:\n```\n{\n    \"options\": {\n        \"threshold\": 85\n    },\n    \"records\": [\n        {\n            \"object\": {\n                \"discard\": \"Joao Vladimir Putin Worton\"\",\n                 match\": \"Joao Vladimir Putin\"\n            },\n            \"type\": \"transaction\"\n        }\n    ]\n}\n```",
+    "exceptionCategory": 1
+  },
+  {
+    "id": 47,
+    "status": "draft",
+    "sort": 41,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-21T14:37:06.409Z",
+    "user_updated": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_updated": "2026-01-21T17:17:26.415Z",
+    "title": "originalSource_TO_TEST",
+    "version": null,
+    "description": "Finds patterns the specified number of words before and after the screened name and applies normalisation to characters when boolean set to false.\nEquivalent to: `extendedSource(3, false)`",
+    "format": {
+      "conditions": [
+        "originalSource() ==  'Worton' "
+      ]
+    },
+    "formatType": "string",
+    "examples": "Exception:\n```\n{\n    \"exceptions\": [\n        {\n           \"conditions\": [\n        \"originalSource() ==  'Worton' \"\n            ]\n        }\n    ]\n}\n```\n\nScreening Request:\n```\n{\n    \"options\": {\n        \"threshold\": 85\n    },\n    \"records\": [\n        {\n            \"object\": {\n                \"discard\": \"Joao Vladimir Putin WÓRTON\"\",\n                 match\": \"Joao Vladimir Putin\"\n            },\n            \"type\": \"transaction\"\n        }\n    ]\n}\n```",
+    "exceptionCategory": 1
+  },
+  {
+    "id": 41,
+    "status": "published",
+    "sort": 42,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-21T11:53:11.535Z",
+    "user_updated": null,
+    "date_updated": null,
+    "title": "request.isIndividual",
+    "version": null,
+    "description": "Discards a match is the request type is Individual",
+    "format": {
+      "conditions": [
+        "request.isIndividual() == 'true' "
+      ]
+    },
+    "formatType": "boolean",
+    "examples": null,
+    "exceptionCategory": 1
+  },
+  {
+    "id": 37,
+    "status": "draft",
+    "sort": 43,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-16T10:29:17.973Z",
+    "user_updated": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_updated": "2026-01-21T17:16:42.869Z",
+    "title": "getMatchedWordCount_TO_TEST",
+    "version": null,
+    "description": "Counts number of words matching between the listed name and the name in the screening request.",
+    "format": {
+      "conditions": [
+        "getWordCount() >= '2'"
+      ]
+    },
+    "formatType": "string",
+    "examples": "Listed Name:\n```\nFrances Levi\n```\n\nException:\n```\n {\n    \"exceptions\": [\n        {\n            \"conditions\": [\n        \"getProfileWordCount() >= '2'\"\n           ]\n        }\n    ]\n}\n```\n\nScreening Request:\n```\n{\n    \"options\": {\n        \"threshold\": 85\n    },\n    \"records\": [\n        {\n            \"object\": {\n                \"discard\": \"Frances Roger Levi\"\n            },\n            \"type\": \"transaction\"\n        }\n    ]\n}\n```",
+    "exceptionCategory": 1
+  },
+  {
+    "id": 45,
+    "status": "published",
+    "sort": 44,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-21T13:49:03.129Z",
+    "user_updated": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_updated": "2026-01-21T13:49:29.430Z",
+    "title": "getMatchedCommonWordCount",
+    "version": null,
+    "description": "Counts common words within the dictionary that are a part of the matched name.",
+    "format": {
+      "conditions": [
+        "getMatchedCommonWordCount() == '4'"
+      ]
+    },
+    "formatType": "integer",
+    "examples": "List Name:\n`LIMITED LIABILITY COMPANY LAND TECHNOLOGIES`\n\nException:\n```\n{\n    \"exceptions\": [\n        {\n            \"conditions\": [\n        \"getMatchedCommonWordCount() == '4'\"\n          ]\n        }\n    ]\n}\n```\n\nScreening Request:\n```\n{\n    \"options\": {\n        \"threshold\": 90\n    },\n    \"records\": [\n        {\n            \"object\": {\n                \"discard\": \"LIABILITY COMPANY LAND TECHNOLOGIES\",\n                \"match\": \"LIMITED LIABILITY COMPANY LAND TECHNOLOGIES\"\n            },\n            \"type\": \"transaction\"\n        }\n    ]\n}\n```",
+    "exceptionCategory": 1,
+    "syntax": [
+      "getMatchedCommonWordCount()"
+    ]
+  },
+  {
+    "id": 36,
+    "status": "draft",
+    "sort": 45,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-16T10:26:20.826Z",
+    "user_updated": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_updated": "2026-01-21T17:15:58.222Z",
+    "title": "getProfileWordCount_TO_TEST",
+    "version": null,
+    "description": "Counts the number of words in the list profile.",
+    "format": {
+      "conditions": [
+        "getProfileWordCount() >= '2'"
+      ]
+    },
+    "formatType": "integer",
+    "examples": "Listed Name:\n```\nFrances Levi\n```\n\nException:\n```\n {\n    \"exceptions\": [\n        {\n            \"conditions\": [\n        \"getProfileWordCount() >= '2'\"\n           ]\n        }\n    ]\n}\n```\n\nScreening Request:\n```\n{\n    \"options\": {\n        \"threshold\": 85\n    },\n    \"records\": [\n        {\n            \"object\": {\n                \"discard\": \"Frances Roger Levi\"\n            },\n            \"type\": \"transaction\"\n        }\n    ]\n}\n```",
+    "exceptionCategory": 1
+  },
+  {
+    "id": 46,
+    "status": "published",
+    "sort": 46,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-21T13:55:44.084Z",
+    "user_updated": null,
+    "date_updated": null,
+    "title": "getAllWordsMatched",
+    "version": null,
+    "description": "Counts and checks if all words are matched.",
+    "format": {
+      "conditions": [
+        "getAllWordsMatched() ==  'false' "
+      ]
+    },
+    "formatType": "boolean",
+    "examples": "List Name:\n`LIMITED LIABILITY COMPANY LAND TECHNOLOGIES`\n\nException:\n```\n{\n    \"exceptions\": [\n        {\n            \"conditions\": [\n        \"getAllWordsMatched() ==  'false' \"\n          ]\n        }\n    ]\n}\n```\n\nScreening Request:\n```\n{\n    \"options\": {\n        \"threshold\": 90\n    },\n    \"records\": [\n        {\n            \"object\": {\n                \"discard\": \"LIABILITY COMPANY LAND TECHNOLOGIES\", \n                \"match\": \"LIMITED LIABILITY COMPANY LAND TECHNOLOGIES\"\n            },\n            \"type\": \"transaction\"\n        }\n    ]\n}\n```",
+    "exceptionCategory": 1
+  },
+  {
+    "id": 38,
+    "status": "draft",
+    "sort": 47,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-16T11:38:08.176Z",
+    "user_updated": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_updated": "2026-01-21T17:16:17.287Z",
+    "title": "getWordCount_TO_TEST",
+    "version": null,
+    "description": "Counts the number of words of the screening request value.",
+    "format": {
+      "conditions": [
+        "getWordCount() >= '2'"
+      ]
+    },
+    "formatType": "integer",
+    "examples": "Listed Name:\n```\nFrances Levi\n```\n\nException:\n```\n {\n    \"exceptions\": [\n        {\n            \"conditions\": [\n        \"getWordCount() >= '2'\"\n           ]\n        }\n    ]\n}\n```\n\nScreening Request:\n```\n{\n    \"options\": {\n        \"threshold\": 85\n    },\n    \"records\": [\n        {\n            \"object\": {\n                \"discard\": \"Frances Roger Levi\"\n            },\n            \"type\": \"transaction\"\n        }\n    ]\n}\n````\n\n",
+    "exceptionCategory": 1
+  },
+  {
+    "id": 52,
+    "status": "draft",
+    "sort": 48,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-21T17:22:40.619Z",
+    "user_updated": null,
+    "date_updated": null,
+    "title": "latinRequest",
+    "version": null,
+    "description": "Discards if request name is screened in Latin or Original Script Name (OSN, i.e. non-latin characters).\n",
+    "format": {
+      "conditions": [
+        "latinRequest() == 'false'"
+      ]
+    },
+    "formatType": "boolean",
+    "examples": "Exception:\n```\n{\n    \"exceptions\": [\n        {\n            \"conditions\": [\n        \"latinRequest() == 'false'\"\n           ]\n        }\n    ]\n}\n```\n\nScreening Request:\n```\n{\n    \"options\": {\n        \"threshold\": 85\n        \n    },\n    \"records\": [\n        {\n            \"object\": {\n                \"discard\": \"Путин, Владимир Владимирович\", // will discard OSN Request\n                \"match\": \"Putin, Vladimir Vladimirovich\" // will raise match on Latin Request\n            },\n            \"type\": \"transaction\"\n        }\n    ]\n}\n```\n",
+    "exceptionCategory": 1
+  },
+  {
+    "id": 53,
+    "status": "published",
+    "sort": 49,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-21T17:35:22.020Z",
+    "user_updated": null,
+    "date_updated": null,
+    "title": "latinMatch",
+    "version": null,
+    "description": "Discards if screened name is Latin or non-Latin (OSN). Example Request Name: Владимир Путин   Screened: Vladimir Putin (\"latinMatch\": \"true\") -has  been transliterated.",
+    "format": {
+      "conditions": {
+        "latinMatch": "false"
+      }
+    },
+    "formatType": "boolean",
+    "examples": "Exception:\n```\n{\n    \"exceptions\": [\n        {\n            \"conditions\": {\n        \"latinMatch\": \"false\"\n          }\n        }\n    ]\n}\n```\nScreening Request:\n```\n{\n    \"options\": {\n        \"threshold\": 85\n        \n    },\n    \"records\": [\n        {\n            \"object\": {\n                \"discard\": \"Putin, Vladimir Vladimirovich\", // will discard match on Latin Match\n                \"match\": \"Путин, Владимир Владимирович\" // will raise match OSN match\n               \n            },\n            \"type\": \"transaction\"\n        }\n    ]\n}\n```",
+    "exceptionCategory": 1
+  },
+  {
+    "id": 56,
+    "status": "published",
+    "sort": 50,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-21T17:47:19.701Z",
+    "user_updated": null,
+    "date_updated": null,
+    "title": "primaryWordCount",
+    "version": null,
+    "description": "Counts  the number of words in \"/profileSummary/name\"",
+    "format": {
+      "conditions": [
+        "primaryWordCount() == '3' "
+      ]
+    },
+    "formatType": "integer",
+    "examples": "Exception:\n```\n{\n    \"exceptions\": [\n        {\n            \"conditions\": [\n        \"primaryWordCount() == '3' \"\n          ]\n        }\n    ]\n}\n```\n\nScreening Request:\n```\n{\n    \"options\": {\n        \"threshold\": 85\n        \n    },\n    \"records\": [\n        {\n            \"object\": {\n                \"discard\": \"Putin, Vladimir Vladimirovich\", // will discard match on primary \"name\": \"Putin, Vladimir Vladimirovich\",\n                \"match\": \"Doe,John\" // will raise match on primary \"name\": \"Doe, John\",\n            },\n            \"type\": \"transaction\"\n        }\n    ]\n}\n```",
+    "exceptionCategory": 1
+  },
+  {
+    "id": 54,
+    "status": "draft",
+    "sort": 51,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-21T17:41:50.746Z",
+    "user_updated": null,
+    "date_updated": null,
+    "title": "requestWordCount",
+    "version": null,
+    "description": "Counts  the number of words in \"/match/screened\"",
+    "format": {
+      "conditions": [
+        "requestWordCount() == '3'"
+      ]
+    },
+    "formatType": "integer",
+    "examples": "Exception:\n```\n{\n    \"exceptions\": [\n        {\n           \"conditions\": [\n        \"requestWordCount() == '3'\"\n          ]\n        }\n    ]\n}\n```\n\nScreening Request:\n```\n{\n    \"options\": {\n        \"threshold\": 85\n        \n    },\n    \"records\": [\n        {\n            \"object\": {\n                \"discard\": \"Putin, Vladimir Vladimirovich\", // will discard match on 3 names in request\n                \"match\": \"Putin, Vladimir\" // will raise match \n            },\n            \"type\": \"transaction\"\n        }\n    ]\n}\n```",
+    "exceptionCategory": 1
+  },
+  {
+    "id": 55,
+    "status": "published",
+    "sort": 52,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-21T17:45:14.266Z",
+    "user_updated": null,
+    "date_updated": null,
+    "title": "matchWordCount",
+    "version": null,
+    "description": "Counts  the number of words in \"/matches/match\"",
+    "format": {
+      "conditions": [
+        "matchWordCount() == '3' "
+      ]
+    },
+    "formatType": null,
+    "examples": "Exception:\n```\n{\n    \"exceptions\": [\n        {\n            \"conditions\": [\n        \"matchWordCount() == '3' \"\n           ]\n        }\n    ]\n}\n```\n\nScreening Request:\n```\n{\n    \"options\": {\n        \"threshold\": 85\n        \n    },\n    \"records\": [\n        {\n            \"object\": {\n                \"discard\": \"Putin, Vladimir Vladimirovich\", // will discard match on 3 names matched\n                \"match\": \"Putin, Vladimir\" // will raise \n            },\n            \"type\": \"transaction\"\n        }\n    ]\n}\n```",
+    "exceptionCategory": 1
+  },
+  {
+    "id": 50,
+    "status": "published",
+    "sort": 53,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-21T15:55:41.484Z",
+    "user_updated": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_updated": "2026-01-21T21:09:59.420Z",
+    "title": "hasAddressIn",
+    "version": null,
+    "description": "Discards based on any ISO country listed, matching a metadata address.\n\nThis function may be used with the option, *scopeFilter*.\n",
+    "format": {
+      "conditions": [
+        "hasAddressIn('ua','iq')"
+      ]
+    },
+    "formatType": "list",
+    "examples": "Exception:\n```\n{\n    \"exceptions\": [\n        {\n            \"conditions\": [\n        \"hasAddressIn('ua','iq')\"\n            ]\n        }\n    ]\n}\n```\n\nScreening Request:\n```\n{\n    \"options\": {\n        \"threshold\": 85\n    },\n    \"records\": [\n        {\n            \"type\": \"individual\",\n            \"object\": \"Vladimir Putin\",\n            \"metadata\": {\n                \"places\": [\n                    {\n                        \"country\": \"RU\",\n                        \"type\": \"pob\"\n                    },\n                    {\n                        \"country\": \"UA\",\n                        \"type\": \"address\"\n                    }\n                ]\n            }\n        },\n        {\n            \"type\": \"individual\",\n            \"object\": \"Saddam Hussein\",\n            \"metadata\": {\n                \"places\": [\n                    {\n                        \"country\": \"IQ\",\n                        \"type\": \"pob\"\n                    },\n                    {\n                        \"country\": \"SY\",\n                        \"type\": \"address\"\n                    }\n                ]\n            }\n        }\n    ]\n}\n```",
+    "exceptionCategory": 1
+  },
+  {
+    "id": 61,
+    "status": "published",
+    "sort": 54,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-21T21:05:33.431Z",
+    "user_updated": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_updated": "2026-01-21T21:09:42.719Z",
+    "title": "hasPlaceOfBirthIn",
+    "version": null,
+    "description": "Finds listed countries in place of birth.\n\nThis function may be used with the option, *scopeFilter*.",
+    "format": null,
+    "formatType": "list",
+    "examples": "scopeFilter Example Format: \n```\n\"scopeFilter\":\"profile.hasPlaceOfBirthIn('fr','pt')\"\n```",
+    "exceptionCategory": 1
+  },
+  {
+    "id": 51,
+    "status": "published",
+    "sort": 55,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-21T16:00:02.581Z",
+    "user_updated": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_updated": "2026-01-21T21:08:59.905Z",
+    "title": "hasAnyPlaceIn",
+    "version": null,
+    "description": "Discards based on any address or place of birth in the metadata matching one of the listed ISO countries.\n\nThis function may be used with the option, *scopeFilter*.",
+    "format": {
+      "conditions": [
+        "hasAnyPlaceIn('ru','pt')"
+      ]
+    },
+    "formatType": "list",
+    "examples": "Exception:\n```\n{\n    \"exceptions\": [\n        {\n            \"conditions\": [\n        \"hasAnyPlaceIn('ru','pt')\"\n          ]\n        }\n    ]\n}\n```\n\nScreening Request:\n```\n{\n    \"options\": {\n        \"threshold\": 85\n    },\n    \"records\": [\n        {\n            \"type\": \"individual\",\n            \"object\": \"Vladimir Putin\",\n            \"metadata\": {\n                \"places\": [\n                    {\n                        \"country\": \"RU\",\n                        \"type\": \"pob\"\n                    },\n                    {\n                        \"country\": \"UA\",\n                        \"type\": \"address\"\n                    }\n                ]\n            }\n        },\n        {\n            \"type\": \"individual\",\n            \"object\": \"Saddam Hussein\",\n            \"metadata\": {\n                \"places\": [\n                    {\n                        \"country\": \"IQ\",\n                        \"type\": \"pob\"\n                    },\n                    {\n                        \"country\": \"SY\",\n                        \"type\": \"address\"\n                    }\n                ]\n            }\n        }\n    ]\n}\n```\n",
+    "exceptionCategory": 1
+  },
+  {
+    "id": 60,
+    "status": "draft",
+    "sort": 56,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-21T20:55:39.813Z",
+    "user_updated": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_updated": "2026-01-21T21:09:17.938Z",
+    "title": "hasPlace_TO_TEST",
+    "version": null,
+    "description": "Discards based on Address Country or place of birth present in the Metadata.\n\nThis function may be used with the option, *scopeFilter*.",
+    "format": {
+      "conditions": [
+        "hasPlace('ru','sy')"
+      ]
+    },
+    "formatType": "list",
+    "examples": "Exception:\n```\n{\n    \"exceptions\": [\n        {\n            \"conditions\": [\n        \"hasPlace('ru','sy')\"\n          ]\n        }\n    ]\n}\n```\n\nScreening Request:\n```\n{\n    \"options\": {\n        \"threshold\": 85\n    },\n    \"records\": [\n        {\n            \"type\": \"individual\",\n            \"object\": \"Vladimir Putin\",\n            \"metadata\": {\n                \"places\": [\n                    {\n                        \"country\": \"RU\",\n                        \"type\": \"pob\"\n                    },\n                    {\n                        \"country\": \"UA\",\n                        \"type\": \"address\"\n                    }\n                ]\n            }\n        },\n        {\n            \"type\": \"individual\",\n            \"object\": \"Saddam Hussein\",\n            \"metadata\": {\n                \"places\": [\n                    {\n                        \"country\": \"IQ\",\n                        \"type\": \"pob\"\n                    },\n                    {\n                        \"country\": \"SY\",\n                        \"type\": \"address\"\n                    }\n                ]\n            }\n        }\n    ]\n}\n```\n\nscopeFilter Example Format:\n```\n\"scopeFilter\":\"profile.hasPlace('fr')\"\n```\n",
+    "exceptionCategory": 1
+  },
+  {
+    "id": 42,
+    "status": "published",
+    "sort": 57,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-21T13:29:55.483Z",
+    "user_updated": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_updated": "2026-01-21T13:30:18.351Z",
+    "title": "hit.getPlaceType",
+    "version": null,
+    "description": "For geo matches raised on the records.metadata.places  hits are return in an array:\n`\"/metadata/places[0]/country\"`.\nThis function allows to discard matches as per place type available: address, pob, nationality, or other.",
+    "format": {
+      "conditions": [
+        "hit.getPlaceType() == 'pob' "
+      ]
+    },
+    "formatType": "string",
+    "examples": "Exception:\n```\n{\n    \"exceptions\": [\n        {\n            \"conditions\": [\n        \"hit.getPlaceType() == 'pob' \"\n          ]\n        }\n    ]\n}\n```\nScreening Request:\n```\n{\n    \"options\": {\n        \"threshold\": 85,\n         \"geoPolicy\" : {\"EMBARGOSEU\" : { \"countries\" : [\"ru\"]}}\n    },\n    \"records\": [\n        {\n            \"type\": \"individual\",\n            \"object\": \"Vladimir Putin\",\n            \"metadata\": {\n                \"places\": [\n                    {\n                        \"country\": \"RU\",\n                        \"type\": \"nationality\" // match\n                    },\n                    {\n                        \"country\": \"ru\",\n                        \"type\": \"pob\"// discard\n                    },\n                    {\n                        \"country\": \"ru\",\n                        \"type\": \"address\"// match\n                    },\n                    {\n                        \"country\": \"ru\",\n                        \"type\": \"other\"// match\n                    }\n                ]\n            }\n        }\n    ]\n}\n```",
+    "exceptionCategory": 1
+  },
+  {
+    "id": 57,
+    "status": "published",
+    "sort": 58,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-21T17:51:02.139Z",
+    "user_updated": null,
+    "date_updated": null,
+    "title": "orderedMatches",
+    "version": null,
+    "description": "Discards matches for which the screened name is not in same order as the listed name.\n\nFor example, with Profile Listed Name: AL TIKRITI, SADDAM HUSSEIN\n\nScreened names considered as ordered :\n- AL TIKRITI SADDAM HUSSEIN\n- SADDAM HUSSEIN AL TIKRITI\n- SADDAM AL TIKRITI\n- SADDAM XXXX HUSSEIN AL XXXX TIKRITI\n\nNot considered ordered:\n- HUSSEIN SADDAM AL TIKRITI\n- AL HUSSEIN TIKRITI SADDAM",
+    "format": {
+      "conditions": {
+        "orderedMatches": "false"
+      }
+    },
+    "formatType": "boolean",
+    "examples": "Exceptions:\n```\n{\n    \"exceptions\": [\n        {\n            \"conditions\": {\n        \"orderedMatches\": \"false\"\n           }\n        }\n    ]\n}\n```\nScreening Request:\n```\n{\n\n    \"options\": {\n        \"threshold\": 85\n    },\n    \"records\": [\n        {\n            \"object\": {\n                 \"discard\":\"AL HUSSEIN TIKRITI SADDAM\",\n                \"match\":\"AL TIKRITI SADDAM HUSSEIN\",\n            },\n            \"type\": \"transaction\"  \n        }\n    ]\n}\n```",
+    "exceptionCategory": 1
+  },
+  {
+    "id": 43,
+    "status": "published",
+    "sort": 59,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-21T13:32:38.203Z",
+    "user_updated": null,
+    "date_updated": null,
+    "title": "geo.hasSanctionClues",
+    "version": null,
+    "description": "Discard a match based on sanctionsClues being present in the API response information at: `results.matches.geoScope.sanctionClues`.\nThis information is only populated when geoScore is enabled: `\"options\": {\"geoScore\":true}`.",
+    "format": {
+      "conditions": [
+        "geo.hasSanctionClues"
+      ]
+    },
+    "formatType": "boolean",
+    "examples": "Exception:\n```\n{\n    \"exceptions\": [\n        {\n            \"conditions\": [\n        \"geo.hasSanctionClues\"\n          ]\n        }\n    ]\n}\n```\n\nScreening Request:\n```\n{\n    \"options\": {\n        \"threshold\": 85,\n        \"geoScore\":true\n    },\n    \"records\": [\n        {\n            \"object\": {\n               \"discard\": \"Putin, Vladimir Vladimirovich from Moscow Russia\" // will discard \n            },\n            \"type\": \"transaction\"  \n        },\n        {\n            \"object\": {\n                \"match\": \"AL TIKRITI, SADDAM HUSSEIN from Iraque\" // will raise match \n            },\n            \"type\": \"transaction\"  \n        }\n    ]\n}\n```",
+    "exceptionCategory": 1
+  },
+  {
+    "id": 48,
+    "status": "published",
+    "sort": 60,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-21T15:44:39.676Z",
+    "user_updated": null,
+    "date_updated": null,
+    "title": "geo.hasSanctionCluesFor",
+    "version": null,
+    "description": "Discards a match based on the ISO country specified in the exception and countries detected in: `results.matches.geoScope.sanctionClues`.\n\nThis information is only populated when geoScore is enabled: `\"options\": {\"geoScore\":true}`.",
+    "format": {
+      "conditions": [
+        "geo.hasGeoClueFor('ru')"
+      ]
+    },
+    "formatType": "string",
+    "examples": "Exception:\n```\n{\n    \"exceptions\": [\n        {\n            \"conditions\": [\n        \"geo.hasGeoClueFor('ru')\"\n           ]\n        }\n    ]\n}\n```\n\nScreening Request:\n```\n{\n    \"options\": {\n        \"threshold\": 85,\n        \"geoScore\":true\n    },\n    \"records\": [\n        {\n            \"object\": {\n               \"discard\": \"Putin, Vladimir Vladimirovich from Moscow Russia\",\n                \"match\": \"AL TIKRITI, SADDAM HUSSEIN from Iraque\" \n            },\n            \"type\": \"transaction\"  \n        }\n    ]\n}\n```",
+    "exceptionCategory": 1
+  },
+  {
+    "id": 40,
+    "status": "published",
+    "sort": 61,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-21T11:50:45.566Z",
+    "user_updated": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_updated": "2026-01-21T21:10:09.454Z",
+    "title": "profile.hasNationality",
+    "version": null,
+    "description": "Discards a match based on the Nationality present in the Profile.\n\nThis function may be used with the option, *scopeFilter*.",
+    "format": {
+      "conditions": [
+        "profile.hasNationality('pt','fr')"
+      ]
+    },
+    "formatType": "string",
+    "examples": null,
+    "exceptionCategory": 1
+  },
+  {
+    "id": 58,
+    "status": "draft",
+    "sort": 62,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-21T17:55:47.827Z",
+    "user_updated": null,
+    "date_updated": null,
+    "title": "profile.isLinkedAs",
+    "version": null,
+    "description": "Discards match if certain links are contained in the DowJones RCA.\nThis function is only relevant for use with the dowjones collection.\n\nOnly allows operators:  `==` and `!=`  \n\n",
+    "format": {
+      "conditions": [
+        "profile.isLinkedAs('Husband')"
+      ]
+    },
+    "formatType": "string",
+    "examples": "Exception:\n```\n{\n    \"exceptions\": [\n        {\n            \"conditions\": [\n        \"profile.isLinkedAs('Husband')\"\n          ]\n        }\n    ]\n}\n```\n\nScreening Request:\n```\n{\n\n    \"options\": {\n        \"threshold\": 85\n    },\n    \"records\": [\n        {\n            \"object\": {\n                \"discard\":\"Michelle Lavaughn OBAMA\", //RCA\n                \"match\":\"Hillary Rodham Clinton\" //PEP\n            },\n            \"type\": \"transaction\"  \n        }\n    ]\n}\n```",
+    "exceptionCategory": 1
+  },
+  {
+    "id": 1,
+    "status": "draft",
+    "sort": 63,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2025-11-19T14:52:59.479Z",
+    "user_updated": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_updated": "2025-12-29T10:30:09.410Z",
+    "title": "explainException_INTERNAL_DO_NOT_PUBLISH",
+    "version": null,
+    "description": "Details provided for troubleshooting the application of exceptions.",
+    "format": {
+      "context": {
+        "explainException": "<exceptionId>"
+      }
+    },
+    "formatType": "string",
+    "examples": "```\n{\n    \"context\": {\n        \"explainException\": \"0955f14a-f8f8-45a1-aa81-0424b9dfee75\"\n    }\n}\n```\n\n**Response** \n\n ```\n\"exceptionLog\": [\n                        \"Troubleshooting exception [0955f14a-f8f8-45a1-aa81-0424b9dfee75]\",\n                        \"----------------------------------------------------------------\",\n                        \"[profileSummary.categories] returned: [(Cat 1) Special Interest Person (SIP), (Cat 2) Fi ...\",\n                        \"[==] operator outcome: true\"\n                    ]\n```",
+    "exceptionCategory": 1
+  },
+  {
+    "id": 39,
+    "status": "draft",
+    "sort": 64,
+    "user_created": "4505c440-c01d-4d33-b508-dda0f49547a4",
+    "date_created": "2026-01-16T11:38:21.530Z",
+    "user_updated": null,
+    "date_updated": null,
+    "title": "CommonNameSize",
+    "version": null,
+    "description": "TBC",
+    "format": null,
+    "formatType": null,
+    "examples": null,
+    "exceptionCategory": 1
+  },
+  {
+    "id": 64,
+    "status": "published",
+    "sort": 65,
+    "user_created": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_created": "2026-04-08T08:41:39.369Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T16:35:09.583Z",
+    "title": "Response > Matches Block",
+    "version": "April 2026",
+    "description": "Read the JSON response payload and extract the values from the JetScan/JetFlow **response** block that could be required to build the exception conditions. Every field inside the **results.matches object ** can be targeted in a rule condition.\n\nData can be retrieved from:\n\n| JSON | API | Request Body schema | DataPath Pattern |\n| ------ | ------ | ------ | ------ |\n| Response   | JetScan/JetFlow   | Result Block   | `match.<fieldName>`   |",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "match.<fieldName> <operator> '<value>'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n      \"reference\": \"Example_Response_Data\",\n      \"conditions\": [\n        \" match.score <= '90' \" \n      ]\n    }\n  ]\n}\n```\n\n**Additional examples**\n\n| Example Field |  Example Condition |\n| ------ | ------ |\n| match   | \" match.match == 'vladimir putin' \"  |\n| type   |  \" match.type startsWith '/name' \"  |\n| tags   |  \" match.profileSummary.tags in [ 'SAN'] \"   |\n| score   | \" match.score <= '90' \"   |\n| profileSummary Name   | \" match.profileSummary.name  == 'Smith, John' \" |\n| profileSummary Address   | \" match.profileSummary.addresses.addresses  exists\" |\n",
+    "exceptionCategory": 3
+  },
+  {
+    "id": 65,
+    "status": "published",
+    "sort": 66,
+    "user_created": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_created": "2026-04-08T08:44:12.468Z",
+    "user_updated": "50368149-f736-46d7-8c3e-5005e6b5df58",
+    "date_updated": "2026-04-08T17:07:57.883Z",
+    "title": "Response > Variables",
+    "version": "April 2026",
+    "description": "Read the JSON response payload and extract the values from the JetScan/JetFlow **response** block and convert them into variable field.  Variable fields allow you to extract a value directly from the API response and inject it into a rule without hardcoding it. The pattern uses a ${<path/fieldName>} wrapper with a path expression pointing to the field you want to retrieve.\n\n**example:** `${match/profileSummary/name}`\n\nThe path inside the brackets follows the structure of the response object, using / as a separator between levels. In the example above, match is the parent node and profileSummary/name is the field being extracted.\n\nData can be retrieved from:\n\n| JSON | API | Request Body schema | DataPath Pattern |\n| ------ | ------ | ------ | ------ |\n| Response   | JetScan/JetFlow   | Result Block   | `${<path/fieldName>}`   |\n",
+    "format": {
+      "exceptions": [
+        {
+          "conditions": [
+            "${<path/fieldName>} <operator> '<value>'"
+          ]
+        }
+      ]
+    },
+    "formatType": "string",
+    "examples": "```\n{\n  \"exceptions\": [\n    {\n      \"reference\": \"Example_Variable_Data\",\n      \"conditions\": [\n        \"match.screened != '${match/profileSummary/name}' \"\n      ]\n    }\n  ]\n}\n```\n\n**Additional examples**\n\n| Example Field |  Variable Condition |\n| ------ | ------ |\n| Profile Summary Name  |  '${match/profileSummary/name}'   |\n| Path   | '${match/location/path}'   |\n| Tags   | '${match/profileSummary/tags}'   |",
+    "exceptionCategory": 3
+  }
+]
