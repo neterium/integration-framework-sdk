@@ -4822,13 +4822,7 @@
             "description": "Optional suffix which should be found before the screened source in order to apply this exception."
           },
           "conditions": {
-            "type": "object",
-            "description": "Additional restrictions on the request or found match for this exception to be applicable.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/CoreExceptionConditions"
-              }
-            ]
+            "$ref": "#/components/schemas/CoreExceptionConditions"
           },
           "created": {
             "type": "string",
@@ -4937,12 +4931,7 @@
             "description": "Optional suffix which should be found after the screened source in order to apply this exception."
           },
           "conditions": {
-            "description": "Additional restrictions on the request or found match for this exception to be applicable.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/CoreExceptionConditions"
-              }
-            ]
+            "$ref": "#/components/schemas/CoreExceptionConditions"
           },
           "notBefore": {
             "type": "string",
@@ -4996,64 +4985,19 @@
             "description": "Optional suffix which should be found after the screened source in order to apply this exception."
           },
           "conditions": {
-            "description": "Additional restrictions on the request or found match for this exception to be applicable.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/CoreExceptionConditions"
-              }
-            ]
+            "$ref": "#/components/schemas/CoreExceptionConditions"
           }
         },
         "additionalProperties": false,
         "description": "An object containing the fields to update in an existing exception"
       },
       "CoreExceptionConditions": {
-        "anyOf": [
-          {
-            "maxProperties": 20,
-            "type": "object",
-            "description": "Key/Value pairs where the key is the path to a field in either the metadata, the location or the profile summary, and the value is the string (or a list of possible strings) to match with that extracted field. From the request, the following fields are available - /context - /metadata (jetscan only) - /reference (jetscan only) - /object (jetflow only) - /transactionId, /transactionType, /currency, /amount for Jetflow From the response, the following fields are available - /match"
-          },
-          {
-            "maxItems": 20,
-            "type": "array",
-            "description": "Array variant of the same object, with a list of property paths and expected value(s). The array variant can also include an operator.",
-            "items": {
-              "required": [
-                "path",
-                "value"
-              ],
-              "type": "object",
-              "properties": {
-                "path": {
-                  "minLength": 1,
-                  "type": "string",
-                  "description": "Path to the property to extract",
-                  "example": "[\"/location/path\",\"/metadata/myproperty\",\"/profileSummary/tags\"]"
-                },
-                "value": {
-                  "anyOf": [
-                    {
-                      "type": "array",
-                      "description": "The list of accepted values for the extracted field.",
-                      "items": {
-                        "type": "string"
-                      }
-                    },
-                    {
-                      "type": "string",
-                      "description": "One single element of type string is also allowed The value is considered to be a regular expression if it starts with the special character ~. example ~[0-9]{1,2} The value is replaced with the content of a path (extracted value) when wrapped in ${} such as ${/match/profileId}"
-                    }
-                  ]
-                },
-                "operator": {
-                  "type": "string",
-                  "description": "the type of comparison operator to apply on the path such as =, !=, >, >=, <, <=, between, contains"
-                }
-              }
-            }
-          }
-        ]
+        "description": "Additional restrictions on the request or found match for this exception to be applicable.",
+        "type": "array",
+        "maxItems": 20,
+        "items": {
+          "type": "object"
+        }
       },
       "CoreGeoPolicy": {
         "type": "object",
