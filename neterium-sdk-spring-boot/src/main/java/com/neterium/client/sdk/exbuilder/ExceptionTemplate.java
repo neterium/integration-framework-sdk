@@ -7,9 +7,9 @@ import com.neterium.sdk.api.RepositoryApi;
 import com.neterium.sdk.model.CoreExceptionBody;
 import com.neterium.sdk.model.CoreExceptionRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -132,8 +132,7 @@ public class ExceptionTemplate {
         request.reference(reference)
                 .clientReference(sdkProperties.getScreening().getClientReference())
                 .profileId(profileId);
-        if (expire && StringUtils.isNotEmpty(profileId)) {
-
+        if (expire && !ObjectUtils.isEmpty(profileId)) {
             var foundProfiles = repositoryApi.getProfile(profileId).getData();
             if (foundProfiles.isEmpty()) {
                 log.warn("Profile {} not found", profileId);
