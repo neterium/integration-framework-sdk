@@ -26,6 +26,13 @@ public class PathDefinition implements Displayable {
     private final int scope; // 2-bits mask
 
 
+    /**
+     * Constructor
+     *
+     * @param entry  dictionary enty to wrap into a {@link PathDefinition}
+     * @param syntax the associated syntax
+     * @param idx    entry index
+     */
     public PathDefinition(Entry entry, String syntax, int idx) {
         this.id = String.valueOf(entry.getId()) + "." + idx;
         this.name = syntax;

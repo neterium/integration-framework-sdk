@@ -14,11 +14,24 @@ public class ExpressionBuilder {
 
     private final Dictionary dictionary;
 
+    /**
+     * Constructor
+     *
+     * @param dictionary dictionary of available functions, operators, etc
+     */
     public ExpressionBuilder(Dictionary dictionary) {
         this.dictionary = dictionary;
     }
 
 
+    /**
+     * Create a DATA condition
+     *
+     * @param pathId     id of path definition
+     * @param operatorId id of operator
+     * @param value      value
+     * @return an expression
+     */
     public String dataCondition(String pathId, String operatorId, String value) {
         var path = dictionary.getDataPath(pathId);
         var operator = dictionary.getOperator(operatorId);
@@ -26,6 +39,15 @@ public class ExpressionBuilder {
     }
 
 
+    /**
+     * Create a MATCHER condition
+     *
+     * @param functionId id of function
+     * @param bindings   bindings for function parameters
+     * @param operatorId id of operator
+     * @param value      value
+     * @return an expression
+     */
     public String matcherCondition(String functionId,
                                    Map<String, String> bindings,
                                    String operatorId,

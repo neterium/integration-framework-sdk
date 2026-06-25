@@ -82,6 +82,15 @@ public class ExceptionTemplate {
     }
 
 
+    /**
+     * Preview an exception (create payload but do not invoke api)
+     *
+     * @param reference              exception reference
+     * @param jsonExpression         valid expression in JSON format
+     * @param profileId              id of profile to which exception has to be applied on
+     * @param expireOnChecksumChange whether to expire exception on profile update
+     * @return a populated {@link CoreExceptionRequest}
+     */
     public CoreExceptionRequest previewCustomException(String reference,
                                                        String jsonExpression,
                                                        String profileId,
@@ -100,6 +109,15 @@ public class ExceptionTemplate {
     }
 
 
+    /**
+     * Create a custom exception
+     *
+     * @param reference              exception reference
+     * @param rawExpression          valid expression in JSON format
+     * @param profileId              id of profile to which exception has to be applied on
+     * @param expireOnChecksumChange whether to expire exception on profile update
+     * @return id of created exception
+     */
     public String createCustomException(String reference,
                                         String rawExpression,
                                         String profileId,

@@ -36,6 +36,13 @@ public class FunctionDefinition implements Displayable, Typed {
     private String description;
 
 
+    /**
+     * Constructor
+     *
+     * @param entry  dictionary enty to wrap into a {@link FunctionDefinition}
+     * @param syntax the associated syntax
+     * @param idx    entry index
+     */
     public FunctionDefinition(Entry entry, String syntax, int idx) {
         this.id = String.valueOf(entry.getId()) + "." + idx;
         this.label = syntax;

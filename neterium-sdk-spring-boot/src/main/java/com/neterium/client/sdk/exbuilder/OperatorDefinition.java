@@ -23,6 +23,11 @@ public class OperatorDefinition implements Displayable, Typed {
     private final String type;
 
 
+    /**
+     * Constructor
+     *
+     * @param entry dictionary enty to wrap into a {@link OperatorDefinition}
+     */
     public OperatorDefinition(Entry entry) {
         this.id = String.valueOf(entry.getId());
         this.type = entry.getType();

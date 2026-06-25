@@ -10,9 +10,19 @@ import com.fasterxml.jackson.annotation.JsonView;
  */
 public interface Typed {
 
+    /**
+     * Get type
+     *
+     * @return type name
+     */
     @JsonView(Views.Details.class)
     String getType();
 
+    /**
+     * Whether this type requires values to be quoted or not
+     *
+     * @return type name
+     */
     @JsonIgnore
     default boolean needQuotes() {
         return "string".equalsIgnoreCase(getType());
