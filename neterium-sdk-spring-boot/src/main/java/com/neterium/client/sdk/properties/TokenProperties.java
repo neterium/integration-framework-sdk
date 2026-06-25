@@ -16,12 +16,12 @@ public class TokenProperties {
      * Set to true for proactive renewal (just before expired),
      * set to false for on-demand renewal
      */
-    private boolean eager = false;
+    private boolean eager = true;
 
     /**
      * Pre-fetch a token on application startup
      */
-    private boolean prefetch = false;
+    private boolean prefetch = true;
 
     /**
      * Consider tokens as invalid X seconds before expiry

@@ -20,20 +20,19 @@ public interface TokenService {
     /**
      * Get a ready-to-use API token based on credentials
      *
-     * @param username username
-     * @param password user password
+     * @param clientId     : client id
+     * @param clientSecret : client secret
      * @return an API access token
      */
-    String getApiToken(String username, String password);
+    String getApiToken(String clientId, String clientSecret);
 
 
     /**
      * Logout (end session)
      *
-     * @param keyOrUsername logical key or username
-     * @param isKey         whether the provided string is a key (true) or a username (false)
+     * @param keyOrClientId logical key identifier
      * @return true if logout succeeded, false otherwise
      */
-    boolean logout(String keyOrUsername, boolean isKey);
+    boolean logout(String keyOrClientId);
 
 }

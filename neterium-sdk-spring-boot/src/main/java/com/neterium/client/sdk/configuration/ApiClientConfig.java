@@ -150,7 +150,7 @@ public class ApiClientConfig {
      */
     @PreDestroy
     public void onShutdown() {
-        tokenService.logout(apiProperties.getKeyId(), true);
+        tokenService.logout(apiProperties.getKeyId());
     }
 
 

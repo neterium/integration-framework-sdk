@@ -17,9 +17,4 @@ public class OAuth2Properties {
      */
     private String wellKnownUri;
 
-    /**
-     * Client id to use in OAUth2 authentication handshake
-     */
-    private String clientId;
-    
 }

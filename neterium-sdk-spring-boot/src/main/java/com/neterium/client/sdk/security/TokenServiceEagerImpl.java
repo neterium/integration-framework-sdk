@@ -80,8 +80,9 @@ public class TokenServiceEagerImpl extends BaseTokenServiceImpl {
     private void scheduleAutoRenewal(String cacheKey, JSONObject oauth2Token) {
         Runnable task = () -> {
             log.debug("Refreshing token for '{}'", cacheKey);
+            var clientId = oauth2Token.getString("client_id");
             var refreshToken = oauth2Token.getString("refresh_token");
-            super.renewOAuth2Token(cacheKey, refreshToken);
+            super.renewOAuth2Token(cacheKey, clientId, refreshToken);
         };
         // Safety margin: renew token x seconds before limit
         var expiresInSeconds = oauth2Token.getInt("expires_in") - getExpirationOffsetInSec();

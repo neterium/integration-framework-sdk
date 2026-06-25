@@ -68,7 +68,7 @@ public abstract class BaseTokenServiceImpl implements TokenService {
             log.error("Invalid key {}", keyId);
             throw new IllegalArgumentException("Requested API key (" + keyId + ") was not found");
         }
-        return getApiToken(credentials.username(), credentials.password());
+        return getOrReuseApiToken(keyId, credentials.clientId(), credentials.clientSecret());
     }
 
 
@@ -76,28 +76,23 @@ public abstract class BaseTokenServiceImpl implements TokenService {
      * @see TokenService#getApiToken(String, String)
      */
     @Override
-    public String getApiToken(String username, String password) {
-        return getOrReuseApiToken(username, username, password);
+    public String getApiToken(String clientId, String clientSecret) {
+        // Use clientId as cache key
+        return getOrReuseApiToken(clientId, clientId, clientSecret);
     }
 
 
     /**
-     * @see TokenService#logout(String, boolean)
+     * @see TokenService#logout(String)
      */
     @Override
-    public boolean logout(String keyOrUsername, boolean isKey) {
-        boolean success;
-        if (isKey) {
-            success = Optional.ofNullable(allApiKeys.get(keyOrUsername))
-                    .map(credentials -> logout(credentials.username()))
-                    .orElse(false);
+    public boolean logout(String keyOrClientId) {
+        JSONObject found = getFromCache(keyOrClientId);
+        if (found != null) {
+            return oauth2Client.logout(found.getString("id_token"));
         } else {
-            success = logout(keyOrUsername);
+            return false;
         }
-        if (success) {
-            log.debug("Logout successful for {}", keyOrUsername);
-        }
-        return success;
     }
 
 
@@ -129,8 +124,8 @@ public abstract class BaseTokenServiceImpl implements TokenService {
     }
 
 
-    protected JSONObject renewOAuth2Token(String cacheKey, String refreshToken) {
-        JSONObject newOAuth2Token = oauth2Client.refreshToken(refreshToken);
+    protected JSONObject renewOAuth2Token(String cacheKey, String clientId, String refreshToken) {
+        JSONObject newOAuth2Token = oauth2Client.refreshToken(clientId, refreshToken);
         handleNewToken(cacheKey, newOAuth2Token);
         return newOAuth2Token;
     }
@@ -139,7 +134,7 @@ public abstract class BaseTokenServiceImpl implements TokenService {
     // === Private ===
 
 
-    private String getOrReuseApiToken(String cacheKey, String username, String password) {
+    private String getOrReuseApiToken(String cacheKey, String clientId, String clientSecret) {
         var oauth2Token = getFromCache(cacheKey);
         if (oauth2Token != null) {
             log.debug("Cache hit for '{}'", cacheKey);
@@ -149,26 +144,16 @@ public abstract class BaseTokenServiceImpl implements TokenService {
                     log.warn("Expired refresh token for '{}'", cacheKey);
                     oauth2Token = null; // invalidate token
                 } else {
-                    oauth2Token = renewOAuth2Token(cacheKey, oauth2Token.getString("refresh_token"));
+                    oauth2Token = renewOAuth2Token(cacheKey, clientId, oauth2Token.getString("refresh_token"));
                 }
             }
         }
         if (oauth2Token == null) {
-            log.debug("Requesting brand new token for '{}'", cacheKey);
-            oauth2Token = oauth2Client.getNewToken(username, password);
+            log.debug("Requesting new token for '{}'", cacheKey);
+            oauth2Token = oauth2Client.getNewToken(clientId, clientSecret);
             handleNewToken(cacheKey, oauth2Token);
         }
         return oauth2Token.getString("access_token");
-    }
-
-
-    private boolean logout(String cacheKey) {
-        JSONObject found = getFromCache(cacheKey);
-        if (found != null) {
-            return oauth2Client.logout(found.getString("id_token"));
-        } else {
-            return false;
-        }
     }
 
 

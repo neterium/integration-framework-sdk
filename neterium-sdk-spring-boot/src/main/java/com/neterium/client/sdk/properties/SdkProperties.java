@@ -19,7 +19,7 @@ import java.util.Map;
 public class SdkProperties {
 
     /**
-     * A map of (alias, credentials) pairs
+     * A map of (client-id, client-secret) pairs
      */
     private Map<String, Credentials> apiKeys = new HashMap<>();
 
@@ -51,10 +51,10 @@ public class SdkProperties {
     /**
      * Credentials
      *
-     * @param username user name
-     * @param password user password
+     * @param clientId     client id
+     * @param clientSecret client secret
      */
-    public record Credentials(String username, String password) {
+    public record Credentials(String clientId, String clientSecret) {
     }
 
 }

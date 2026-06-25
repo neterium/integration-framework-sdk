@@ -74,18 +74,17 @@ public class OAuth2Client {
 
 
     /**
-     * Get an OAuth2 token using password credentials
+     * Get an OAuth2 token using client credentials flow
      *
-     * @param username : user name
-     * @param password : user password
+     * @param clientId     : client id
+     * @param clientSecret : client secret
      * @return an OAuth2 token
      */
-    public JSONObject getNewToken(String username, String password) {
-        return invokeTokenEndpoint("password", Map.of(
-                "password", password,
-                "username", username,
-                "client_id", oAuth2Properties.getClientId(),
-                "scope", "openid profile email")
+    public JSONObject getNewToken(String clientId, String clientSecret) {
+        return invokeTokenEndpoint("client_credentials", Map.of(
+                "client_id", clientId,
+                "client_secret", clientSecret,
+                "scope", "openid email")
         );
     }
 
@@ -93,12 +92,13 @@ public class OAuth2Client {
     /**
      * Get an OAuth2 token using a refresh token
      *
+     * @param clientId     : client id
      * @param refreshToken : a refresh token
      * @return an OAuth2 token
      */
-    public JSONObject refreshToken(String refreshToken) {
+    public JSONObject refreshToken(String clientId, String refreshToken) {
         return invokeTokenEndpoint("refresh_token", Map.of(
-                "client_id", oAuth2Properties.getClientId(),
+                "client_id", clientId,
                 "refresh_token", refreshToken)
         );
     }
